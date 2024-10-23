@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\dpOnDotnet.csproj": {}
+    "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\dpOnDotnet.csproj": {}
   },
   "projects": {
-    "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\dpOnDotnet.csproj": {
+    "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\dpOnDotnet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\dpOnDotnet.csproj",
+        "projectUniqueName": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\dpOnDotnet.csproj",
         "projectName": "dpOnDotnet",
-        "projectPath": "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\dpOnDotnet.csproj",
+        "projectPath": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\dpOnDotnet.csproj",
         "packagesPath": "C:\\Users\\darre\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\obj\\",
+        "outputPath": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\darre\\AppData\\Roaming\\NuGet\\NuGet.Config",

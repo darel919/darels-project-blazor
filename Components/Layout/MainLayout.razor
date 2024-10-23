@@ -6,14 +6,22 @@
     @* </div> *@
 
     <main>
-        <div class="top-row px-4">
-            <NavLink href="/">Home</NavLink>
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+        <header class="top-row px-4">
+            @* <a href="https://darelisme.my.id/" target="_blank" title="DWS Homepage">at DWS</a> *@
+            @* <a href="/" title="Home">Home</a> *@
+            <a href="/" title="darel's Project" class="navLinks">
+                <img src="/favicon.png"/>
+                Home
+            </a>
+        </header>
 
         <article class="content px-4">
             @Body
         </article>
+
+        @* <footer>
+            Served on IIS
+        </footer> *@
     </main>
 </div>
 

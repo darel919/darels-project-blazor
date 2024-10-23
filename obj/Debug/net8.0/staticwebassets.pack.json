@@ -1,23 +1,23 @@
 {
   "Files": [
     {
-      "Id": "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\dpOnDotnet.bundle.scp.css",
+      "Id": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\dpOnDotnet.bundle.scp.css",
       "PackagePath": "staticwebassets\\dpOnDotnet.bundle.scp.css"
     },
     {
-      "Id": "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\app.css",
+      "Id": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\app.css",
       "PackagePath": "staticwebassets\\app.css"
     },
     {
-      "Id": "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "Id": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\bootstrap\\bootstrap.min.css",
       "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css"
     },
     {
-      "Id": "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "Id": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\bootstrap\\bootstrap.min.css.map",
       "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
     },
     {
-      "Id": "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\favicon.png",
+      "Id": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\favicon.png",
       "PackagePath": "staticwebassets\\favicon.png"
     },
     {

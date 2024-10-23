@@ -1,20 +1,30 @@
 ﻿@inject NavigationManager Navigation
 @page "/"
 @rendermode InteractiveServer
-<PageTitle>Home</PageTitle>
-
+<PageTitle>darel's Project Home</PageTitle>
+<HeadContent>
+    <meta name=”robots” content="index, follow">
+    <meta name="type" content="website">
+    <meta name="og:title" content="darel's Video Project">
+    <meta name="description" content="Watch all of my archived video works on darel's Project">
+    <meta name="og:description" content="Watch all of my archived video works on darel's Project">
+    <meta name="twitter:title" content="darel's Video Project">
+    <meta name="twitter:description" content="Watch all of my archived video works on darel's Project">
+</HeadContent>
 <h1>Welcome to darel's Video Project</h1>
 
 @if(fetchedVideos != null) {
     @foreach (var video in fetchedVideos) {
-    <div class="videoPage">
-       <a href="#" @onclick="() => NavigateToVideo(video.content_id)">
-        <img loading="eager" src="@video.ytData.videoThumbnails[4].url" alt="Thumbnail"/>
-        <h1>@video.ytData.title</h1>
-        <h6>@video.created_at</h6>
+        <a href="/watch?v=@video.content_id">
+            <div class="videoPage" title="@video.ytData.title">
+                <img class="imgThumbnail" loading="lazy" src="@video.ytData.videoThumbnails[4].url" alt="Thumbnail"/>
+                <div>
+                    <h1>@video.ytData.title</h1>
+                    <h6>Recorded at: @video.created_at</h6>
+                </div>
+            </div>
         </a>
-    </div>
-}
+    }
 } else {
     <h1>Loading content...</h1>
 }
@@ -22,8 +32,7 @@
 
 @code {
     private readonly HttpClient httpClient = new HttpClient();
-    
-    @* [Parameter] *@
+
     public List<FetchedData> fetchedVideos;
 
     public class Thumbnail {
@@ -50,9 +59,5 @@
     public async Task FetchData() {
         var apiUrl = $"http://10.10.10.10:328/dp?sortBy=desc";
         fetchedVideos = await httpClient.GetFromJsonAsync<List<FetchedData>>(apiUrl);
-    }
-
-    private void NavigateToVideo(string content_id) {
-        Navigation.NavigateTo($"/watch?v={content_id}");
     }
 }

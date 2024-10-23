@@ -29,3 +29,4 @@ C:\Users\darre\Documents\darels Projects\Development\.NET\dpOnDotnet\obj\Debug\n
 C:\Users\darre\Documents\darels Projects\Development\.NET\dpOnDotnet\obj\Debug\net8.0\ref\dpOnDotnet.dll
 c:\Users\darre\Documents\darels Projects\Development\.NET\dpOnDotnet\obj\Debug\net8.0\scopedcss\Components\Pages\Watch.razor.rz.scp.css
 c:\Users\darre\Documents\darels Projects\Development\.NET\dpOnDotnet\obj\Debug\net8.0\scopedcss\Components\Pages\Home.razor.rz.scp.css
+c:\Users\darre\Documents\darels Projects\Development\.NET\dpOnDotnet\obj\Debug\net8.0\dpOnDotnet.sourcelink.json

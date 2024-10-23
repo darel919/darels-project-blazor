@@ -2,6 +2,19 @@
 @rendermode InteractiveServer
 
 <PageTitle>@fetchedData?.ytData.title</PageTitle>
+<HeadContent>
+    <meta name=”robots” content="index, follow">
+    <meta name="type" content="website">
+    <meta name="og:title" content="@fetchedData?.ytData.title">
+    <meta name="description" content="Play @fetchedData?.ytData.title at darel's Project">
+    <meta name="og:description" content="Play @fetchedData?.ytData.title at darel's Project">
+    <meta name="author" content="@fetchedData?.submittedBy">
+    <meta name="og:image" content="@fetchedData?.ytData.videoThumbnails[4].url">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@fetchedData?.ytData.title">
+    <meta name="twitter:description" content="Play @fetchedData?.ytData.title at darel's Project">
+    <meta name="twitter:image" content="@fetchedData?.ytData.videoThumbnails[4].url">
+</HeadContent>
 
 @if (fetchedData != null) {
     @* <img loading="eager" src="@fetchedData.ytData.videoThumbnails[4].url" alt="Thumbnail"> *@
@@ -23,6 +36,7 @@
     public class FetchedData {
         public DateTime created_at {get; set;}
         public string vid_uid {get; set;}
+        public string submittedBy {get; set;}
         public YTData ytData { get; set; }
     }
     public class YTData {
