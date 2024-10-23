@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\dpOnDotnet.bundle.scp.css",
+      "PackagePath": "staticwebassets\\dpOnDotnet.bundle.scp.css"
+    },
+    {
+      "Id": "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "c:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.dpOnDotnet.props",
+      "PackagePath": "build\\dpOnDotnet.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.dpOnDotnet.props",
+      "PackagePath": "buildMultiTargeting\\dpOnDotnet.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.dpOnDotnet.props",
+      "PackagePath": "buildTransitive\\dpOnDotnet.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.dpOnDotnet.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

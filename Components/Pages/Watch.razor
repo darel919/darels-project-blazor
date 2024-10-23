@@ -1,0 +1,49 @@
+﻿@page "/watch"
+@rendermode InteractiveServer
+
+<PageTitle>@fetchedData?.ytData.title</PageTitle>
+
+@if (fetchedData != null) {
+    @* <img loading="eager" src="@fetchedData.ytData.videoThumbnails[4].url" alt="Thumbnail"> *@
+    <div id="videoComponent">
+        <iframe loading="eager" allowfullscreen allow="autoplay" src="https://www.youtube.com/embed/@fetchedData.vid_uid?vq=hd1080&controls=1&rel=0&iv_load_policy=3&playsinline=1&autoplay=1"/>
+        <h1>@fetchedData.ytData.title</h1>
+        <h6>@fetchedData.created_at</h6>
+    </div>
+
+}
+
+@code {
+    private readonly HttpClient httpClient = new HttpClient();
+
+    [SupplyParameterFromQuery(Name = "v")]
+    public string VideoID { get; set; }
+
+    public FetchedData fetchedData;
+    public class FetchedData {
+        public DateTime created_at {get; set;}
+        public string vid_uid {get; set;}
+        public YTData ytData { get; set; }
+    }
+    public class YTData {
+        public string title { get; set; }
+        public List<Thumbnail> videoThumbnails { get; set; }
+        public string description {get; set;}
+    }
+    public class Thumbnail {
+        public string url { get; set; }
+    }
+
+    protected override async Task OnParametersSetAsync() {
+        await FetchData();
+    }
+
+    public async Task FetchData() {
+        try {
+            var apiUrl = $"http://10.10.10.10:328/dp/watch?v={VideoID}";
+            fetchedData = await httpClient.GetFromJsonAsync<FetchedData>(apiUrl);
+        } catch(Exception ex) {
+            Console.WriteLine($"Error fetching data: {ex.Message}");
+        }
+    }
+}
