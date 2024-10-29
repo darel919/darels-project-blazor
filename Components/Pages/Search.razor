@@ -66,6 +66,10 @@ else if (isSearching && !string.IsNullOrEmpty(searchQuery))
     {
         Navigation.LocationChanged += OnLocationChanged;
     }
+    protected override async Task OnInitializedAsync()
+    {
+        await HandleLocationChanged();
+    }
 
     private void OnLocationChanged(object sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
     {

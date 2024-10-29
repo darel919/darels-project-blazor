@@ -1,0 +1,32 @@
+
+@media (min-width: 640px) {
+    #goSearchBtn {
+        border: 1px solid black;
+    }
+    .search-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        /* margin-right:15px; */
+    }
+    
+    .search-container svg {
+        position: absolute;
+        left: 7px;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    
+    .search-container input {
+        padding-left: 35px;
+        margin-right: 5px;
+    }
+}
+@media (max-width: 640px) {
+    svg {
+        display: none;
+    }
+    #goSearchBtn {
+       display: none;
+    }
+}
