@@ -1,11 +1,11 @@
-﻿@rendermode InteractiveServer
+﻿@* @rendermode InteractiveServer *@
 
 <main id="componentParent">
     @if(fetchedVideos != null) {
         @foreach (var video in fetchedVideos.Where(v => v.content_id != CurrentVideoId)) { // Exclude current video
             <a href="/watch?v=@video.content_id">
                 <div class="videoPage" title="@video.ytData.title">
-                    <img class="imgThumbnail" loading="lazy" src="@video.ytData.videoThumbnails[4].url" alt="Thumbnail"/>
+                    <img class="imgThumbnail" loading="lazy" src="@video.ytData.videoThumbnails[4].url" alt="Thumbnail" width="160"/>
                     <div>
                         <h1>@video.ytData.title</h1>
                         <h6>Recorded at: @video.created_at</h6>

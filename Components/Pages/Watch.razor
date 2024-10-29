@@ -1,5 +1,5 @@
 ﻿@page "/watch"
-@rendermode InteractiveServer
+@* @rendermode InteractiveServer *@
 
 <PageTitle>@fetchedData?.ytData.title - darel's Projects</PageTitle>
 
@@ -25,7 +25,7 @@
 <main id="watchPage">
     @if (fetchedData != null) {
         <div id="videoComponent">
-            <iframe loading="eager" allowfullscreen allow="autoplay" src="https://inv.nadeko.net/embed/@fetchedData.vid_uid?autoplay=1&continue=0&related_videos=false&player_style=youtube&local=true&subtitles=id&quality=dash&quality_dash=auto&comments=false&extend_desc=false"></iframe>
+            <iframe loading="eager" title="Player" allowfullscreen allow="autoplay" src="https://inv.nadeko.net/embed/@fetchedData.vid_uid?autoplay=1&continue=0&related_videos=false&player_style=youtube&local=true&subtitles=id&quality=dash&quality_dash=auto&comments=false&extend_desc=false"></iframe>
             <h1>@fetchedData.ytData.title</h1>
             <h6>Record date: @fetchedData.created_at</h6>
             <h6>@fetchedData.total_views views</h6>
