@@ -1,6 +1,6 @@
 ﻿@inject NavigationManager Navigation
 @page "/"
-@rendermode InteractiveServer
+@* @rendermode InteractiveServer *@
 <PageTitle>darel's Project Home</PageTitle>
 <HeadContent>
     <meta name=”robots” content="index, follow">
@@ -11,16 +11,24 @@
     <meta name="twitter:title" content="darel's Video Project">
     <meta name="twitter:description" content="Watch all of my archived video works on darel's Project">
 </HeadContent>
-<h1>Welcome to darel's Video Project</h1>
+<h1>Welcome to darel's Projects</h1>
+
 
 @if(fetchedVideos != null) {
+    <h5>@fetchedVideos.Count videos total</h5>
+    <h6>What do you want to watch today?</h6>
     @foreach (var video in fetchedVideos) {
         <a href="/watch?v=@video.content_id">
             <div class="videoPage" title="@video.ytData.title">
-                <img class="imgThumbnail" loading="lazy" src="@video.ytData.videoThumbnails[4].url" alt="Thumbnail"/>
+                <img class="imgThumbnail" loading="lazy" src="@video.ytData.videoThumbnails[4].url" alt="Thumbnail" width=200/>
                 <div>
                     <h1>@video.ytData.title</h1>
                     <h6>Recorded at: @video.created_at</h6>
+                    @if(video.total_views>0) {
+                        <h6>@video.total_views views</h6>
+                    } else {
+                        <h6>No views</h6>
+                    }
                 </div>
             </div>
         </a>
@@ -49,15 +57,22 @@
         public string content_id { get; set; }
         public string type_id { get; set; }
         public YTData ytData { get; set; }
+        public int total_views {get; set;}
     }
 
-
-    protected override async Task OnParametersSetAsync() {
+  protected override async Task OnInitializedAsync() {
+        var response = await httpClient.GetAsync("http://10.10.10.10:328/dp?sortBy=desc");
+        if (response.IsSuccessStatusCode) {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            fetchedVideos = System.Text.Json.JsonSerializer.Deserialize<List<FetchedData>>(responseContent);
+        }
+    }
+    @* protected override async Task OnParametersSetAsync() {
         await FetchData();
     }
 
     public async Task FetchData() {
         var apiUrl = $"http://10.10.10.10:328/dp?sortBy=desc";
         fetchedVideos = await httpClient.GetFromJsonAsync<List<FetchedData>>(apiUrl);
-    }
+    } *@
 }

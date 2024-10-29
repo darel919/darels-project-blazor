@@ -1,49 +1,66 @@
 ﻿@page "/watch"
 @rendermode InteractiveServer
 
-<PageTitle>@fetchedData?.ytData.title</PageTitle>
+<PageTitle>@fetchedData?.ytData.title - darel's Projects</PageTitle>
+
 <HeadContent>
-    <meta name=”robots” content="index, follow">
+    <meta name="robots" content="index, follow">
     <meta name="type" content="website">
-    <meta name="og:title" content="@fetchedData?.ytData.title">
-    <meta name="description" content="Play @fetchedData?.ytData.title at darel's Project">
-    <meta name="og:description" content="Play @fetchedData?.ytData.title at darel's Project">
     <meta name="author" content="@fetchedData?.submittedBy">
+    <meta name="description" content="Play @fetchedData?.ytData.title at darel's Project">
+
+    <meta property="og:logo" content="https://projects.darelisme.my.id/favicon.png">
+    <meta property="og:type" content="website">
+    <meta name="og:title" content="@fetchedData?.ytData.title">
+    <meta name="og:description" content="Play @fetchedData?.ytData.title at darel's Project">
     <meta name="og:image" content="@fetchedData?.ytData.videoThumbnails[4].url">
+
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:domain" content="projects.darelisme.my.id">
     <meta name="twitter:title" content="@fetchedData?.ytData.title">
     <meta name="twitter:description" content="Play @fetchedData?.ytData.title at darel's Project">
     <meta name="twitter:image" content="@fetchedData?.ytData.videoThumbnails[4].url">
 </HeadContent>
 
-@if (fetchedData != null) {
-    @* <img loading="eager" src="@fetchedData.ytData.videoThumbnails[4].url" alt="Thumbnail"> *@
-    <div id="videoComponent">
-        <iframe loading="eager" allowfullscreen allow="autoplay" src="https://www.youtube.com/embed/@fetchedData.vid_uid?vq=hd1080&controls=1&rel=0&iv_load_policy=3&playsinline=1&autoplay=1"/>
-        <h1>@fetchedData.ytData.title</h1>
-        <h6>@fetchedData.created_at</h6>
-    </div>
+<main id="watchPage">
+    @if (fetchedData != null) {
+        <div id="videoComponent">
+            <iframe loading="eager" allowfullscreen allow="autoplay" src="https://inv.nadeko.net/embed/@fetchedData.vid_uid?autoplay=1&continue=0&related_videos=false&player_style=youtube&local=true&subtitles=id&quality=dash&quality_dash=auto&comments=false&extend_desc=false"></iframe>
+            <h1>@fetchedData.ytData.title</h1>
+            <h6>Record date: @fetchedData.created_at</h6>
+            <h6>@fetchedData.total_views views</h6>
+            <a href="https://youtu.be/@fetchedData.vid_uid" target="_blank" title="Play on YouTube"><h6>Having trouble playing this?</h6></a>
+        </div>
 
-}
+        <dpOnDotnet.Components.Modules.RecommendationComp CurrentVideoId="@fetchedData.content_id" />
+    } else {
+        <h6>Loading content...</h6>
+    }
+</main>
 
 @code {
     private readonly HttpClient httpClient = new HttpClient();
-
+    
     [SupplyParameterFromQuery(Name = "v")]
     public string VideoID { get; set; }
-
+    
     public FetchedData fetchedData;
+
     public class FetchedData {
-        public DateTime created_at {get; set;}
-        public string vid_uid {get; set;}
-        public string submittedBy {get; set;}
+        public DateTime created_at { get; set; }
+        public string vid_uid { get; set; }
+        public string content_id { get; set; }
+        public string submittedBy { get; set; }
+        public int total_views { get; set; }
         public YTData ytData { get; set; }
     }
+
     public class YTData {
         public string title { get; set; }
         public List<Thumbnail> videoThumbnails { get; set; }
-        public string description {get; set;}
+        public string description { get; set; }
     }
+
     public class Thumbnail {
         public string url { get; set; }
     }

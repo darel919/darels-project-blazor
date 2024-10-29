@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\dpOnDotnet.bundle.scp.css"
     },
     {
+      "Id": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\a simple logo with a purple ball fire @ theme, 256x256, no background, for Darels Projects favicon.png",
+      "PackagePath": "staticwebassets\\a simple logo with a purple ball fire @ theme, 256x256, no background, for Darels Projects favicon.png"
+    },
+    {
       "Id": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\app.css",
       "PackagePath": "staticwebassets\\app.css"
     },
@@ -19,6 +23,10 @@
     {
       "Id": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\favicon.png",
       "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\logo.png",
+      "PackagePath": "staticwebassets\\logo.png"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.dpOnDotnet.props",

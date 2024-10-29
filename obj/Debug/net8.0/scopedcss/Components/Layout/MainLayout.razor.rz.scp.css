@@ -10,6 +10,8 @@
 }
 .navLinks img[b-jzc5h4gabf] {
    margin-right: 1rem;
+   width: 48px;
+   height: 48px;
 }
 main[b-jzc5h4gabf] {
     flex: 1;
@@ -23,9 +25,10 @@ header[b-jzc5h4gabf] {
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
 }
 footer[b-jzc5h4gabf] {
-    margin-bottom: 5rem;
-    opacity: 0.1;
-    position: absolute;
+    /* border-top: 1px solid rgba(128, 128, 128, 0.495); */
+    margin: 5rem 0 5rem 0;
+    /* opacity: 0.5; */
+    /* position: absolute; */
     left:0;
     right:0;
     bottom:0;

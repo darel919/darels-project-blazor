@@ -3,21 +3,26 @@ h1 {
     font-size: 1.5rem;
     font-weight: bolder;
 }
-#videoComponent {
-    /* width: 70vw; */
-    height: 100%;
-}
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     iframe {
         border-radius:5px;
         width: 100%;
         min-height: 256px;
       }
 }
-@media (min-width: 768px) {
+@media (min-width: 900px) {
     iframe {
         border-radius:5px;
         width: 100%;
         min-height: 400px;
       } 
+      #videoComponent {
+        width: 65%;
+        padding: 0 1rem 0 0;
+        height: 100%;
+    }
+      #watchPage {
+        display: flex;
+        align-items: flex-start;
+    }
 }

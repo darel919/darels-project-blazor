@@ -8,31 +8,33 @@ a[b-s8gs9dpv8y]{
 }
 @media (min-width: 768px) {
     .imgThumbnail[b-s8gs9dpv8y] {
-        width: 200px;
-        margin-right: 12px;
+        width: 200px !important;
+        margin-right: 1rem;
+        border-radius: 5px;
     }
     h1[b-s8gs9dpv8y] {
-        font-size: 1.15rem;
+        font-size: 1.2rem;
         font-weight: bolder;
     }
     .videoPage[b-s8gs9dpv8y] {
-        display: flex;
-        align-items: center;
-        padding: 10px 0 10px 0;
+        display: flex !important;
+        align-items: center !important;
+        padding: 10px 0 10px 0 !important;
     }
 }
 @media (max-width: 768px) {
     .imgThumbnail[b-s8gs9dpv8y] {
-        width: 128px;
-        margin-right: 12px;
+        width: 128px !important;
+        margin-right: 1rem;
+        border-radius: 5px;
     }
     h1[b-s8gs9dpv8y] {
         font-size: 1rem;
         font-weight: bolder;
     }
     .videoPage[b-s8gs9dpv8y] {
-        display: flex;
-        align-items: center;
-        padding: 15px 0 15px 0;
+        display: flex !important;
+        align-items: center !important;
+        padding: 15px 0 15px 0 !important;
     }
 }

@@ -5,9 +5,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-  <Content Update="Pages\Home.razor.css">
+  <!-- <Content Update="Pages\Home.razor.css">
     <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-  </Content>
+  </Content> -->
 </ItemGroup>
 
 </Project>

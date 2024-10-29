@@ -1,0 +1,64 @@
+﻿@rendermode InteractiveServer
+
+<main id="componentParent">
+    @if(fetchedVideos != null) {
+        @foreach (var video in fetchedVideos.Where(v => v.content_id != CurrentVideoId)) { // Exclude current video
+            <a href="/watch?v=@video.content_id">
+                <div class="videoPage" title="@video.ytData.title">
+                    <img class="imgThumbnail" loading="lazy" src="@video.ytData.videoThumbnails[4].url" alt="Thumbnail"/>
+                    <div>
+                        <h1>@video.ytData.title</h1>
+                        <h6>Recorded at: @video.created_at</h6>
+                        @if(video.total_views>0) {
+                            <h6>@video.total_views views</h6>
+                        } else {
+                            <h6>No views</h6>
+                        }
+                    </div>
+                </div>
+            </a>
+        }
+    } else {
+        <h1>Loading content...</h1>
+    }
+</main>
+
+@code {
+    [Parameter]
+    public string CurrentVideoId { get; set; } // Parameter to receive current video ID
+
+    private readonly HttpClient httpClient = new HttpClient();
+    public List<FetchedData> fetchedVideos;
+
+    public class FetchedData {
+        public DateTime created_at { get; set; }
+        public string vid_uid { get; set; }
+        public string content_id { get; set; }
+        public string submittedBy { get; set; }
+        public YTData ytData { get; set; }
+        public int total_views {get; set;}
+    }
+
+    public class YTData {
+        public string title { get; set; }
+        public List<Thumbnail> videoThumbnails { get; set; }
+        public string description { get; set; }
+    }
+
+    public class Thumbnail {
+        public string url { get; set; }
+    }
+
+    protected override async Task OnParametersSetAsync() {
+        await FetchData();
+    }
+
+    public async Task FetchData() {
+        try {
+            var apiUrl = $"http://10.10.10.10:328/dp/recommendations";
+            fetchedVideos = await httpClient.GetFromJsonAsync<List<FetchedData>>(apiUrl);
+        } catch(Exception ex) {
+            Console.WriteLine($"Error fetching data: {ex.Message}");
+        }
+    }
+}

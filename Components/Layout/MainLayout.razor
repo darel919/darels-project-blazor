@@ -6,27 +6,28 @@
     @* </div> *@
 
     <main>
-        <header class="top-row px-4">
+        <header class="top-row px-4 ">
             @* <a href="https://darelisme.my.id/" target="_blank" title="DWS Homepage">at DWS</a> *@
             @* <a href="/" title="Home">Home</a> *@
-            <a href="/" title="darel's Project" class="navLinks">
-                <img src="/favicon.png"/>
-                Home
-            </a>
+            <NavLink href="/" title="Home" class="navLinks">
+                <img src="/favicon.png"/ alt="Logo" width="64px" height="64px">
+                darel's Project
+            </NavLink>
         </header>
 
         <article class="content px-4">
             @Body
         </article>
 
-        @* <footer>
-            Served on IIS
-        </footer> *@
+        <footer>
+              <a href="https://darelisme.my.id/" target="_blank" title="DWS Homepage">at DWS</a>
+            @* Served on IIS *@
+        </footer>
     </main>
 </div>
 
-<div id="blazor-error-ui">
+@* <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
-</div>
+</div> *@

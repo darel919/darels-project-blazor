@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "5n+rMX+XuSXr5qye5rvTJfmRhR4KZbevEuKEKIiAZQ4=",
+  "Hash": "9WqEqj3zip9SFJYfIWgFZ+rQ7Bz0+55BaNiFxNwc5ns=",
   "Source": "dpOnDotnet",
   "BasePath": "_content/dpOnDotnet",
   "Mode": "Default",
@@ -53,6 +53,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\dpOnDotnet.bundle.scp.css"
+    },
+    {
+      "Identity": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\a simple logo with a purple ball fire @ theme, 256x256, no background, for Darels Projects favicon.png",
+      "SourceId": "dpOnDotnet",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\",
+      "BasePath": "_content/dpOnDotnet",
+      "RelativePath": "a simple logo with a purple ball fire @ theme, 256x256, no background, for Darels Projects favicon.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\a simple logo with a purple ball fire @ theme, 256x256, no background, for Darels Projects favicon.png"
     },
     {
       "Identity": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\app.css",
@@ -129,6 +148,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.png"
+    },
+    {
+      "Identity": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\logo.png",
+      "SourceId": "dpOnDotnet",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\darre\\Documents\\darels Projects\\Development\\.NET\\dpOnDotnet\\wwwroot\\",
+      "BasePath": "_content/dpOnDotnet",
+      "RelativePath": "logo.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\logo.png"
     }
   ]
 }
