@@ -1,4 +1,5 @@
 using dpOnDotnet.Components;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddHttpClient(); // Register HttpClient
+builder.Services.AddSingleton<LibraryConfiguration>();
+
 
 var app = builder.Build();
 

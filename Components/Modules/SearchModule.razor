@@ -4,33 +4,88 @@
 
 <main>
     <div class="search-container">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
-            <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
-        </svg>
-        <input @bind-value="searchQuery" @oninput="OnSearchInputChanged" type="search" autocomplete placeholder="Type to search..." />
-        <button id="goSearchBtn" @onclick="SearchNow" disabled="@string.IsNullOrWhiteSpace(searchQuery)">Search</button>
+        <FluentSearch @bind-Value="searchQuery" @bind-Value:after="HandleSearchInput" 
+        Placeholder="Type to search..." AutoComplete="true" Immediate="true" 
+        @onkeydown="HandleKeyPress" Id="searchInput"></FluentSearch>
     </div>
+    @if (!string.IsNullOrWhiteSpace(searchQuery) && searchTitles != null)
+    {
+        <div class="listbox-container">
+            <FluentListbox Id="searchResults" Immediate="true" aria-label="search results" 
+            Items="@searchTitles.Select(t => t.Title).ToList()" TOption="string" 
+            SelectedOptionChanged="@(e => OnItemSelected(e))" />
+        </div>
+    }
 </main>
 
 @code {
-    private void SearchNow() {
-       if(!string.IsNullOrEmpty(searchQuery)) {
-            Navigation.NavigateTo("/search?q="+searchQuery);
-       }
-    }
     private string searchQuery;
+    private List<SearchResult> searchTitles = new List<SearchResult>();
     private Timer debounceTimer;
-    private const int DebounceDelay = 750; // 500ms delay
+    private const int DebounceDelay = 250; // 750ms delay
 
-     private void OnSearchInputChanged(ChangeEventArgs e) {
-        searchQuery = e.Value.ToString();
+    public class SearchResult
+    {
+        public string Title { get; set; }
+        public string ContentId { get; set; }
+    }
 
-        if(!string.IsNullOrEmpty(searchQuery)) {
+    private void OnItemSelected(string selectedTitle)
+    {
+        var selectedResult = searchTitles.FirstOrDefault(t => t.Title == selectedTitle);
+        if (selectedResult != null)
+        {
+            searchQuery = string.Empty; // Clear search query
+            Navigation.NavigateTo("/watch?v=" + selectedResult.ContentId);
+        }
+    }
+
+    private async Task HandleSearchInput()
+    {
+        if (!string.IsNullOrWhiteSpace(searchQuery))
+        {
             debounceTimer?.Dispose(); // Reset the timer
-            debounceTimer = new Timer(async _ => {
-                Navigation.NavigateTo("/search?q="+searchQuery);
-                 InvokeAsync(StateHasChanged);
+            debounceTimer = new Timer(async _ =>
+            {
+                var response = await Http.GetFromJsonAsync<Response>($"http://10.10.10.10:328/dp/search?q={searchQuery}");
+                searchTitles = response?.data.Select(d => new SearchResult
+                {
+                    Title = d.ytData.title,
+                    ContentId = d.content_id
+                }).ToList() ?? new List<SearchResult>();
+                await InvokeAsync(StateHasChanged);
             }, null, DebounceDelay, Timeout.Infinite);
+        }
+    }
+
+    public class Response
+    {
+        public List<FetchedData> data { get; set; }
+    }
+
+    public class FetchedData
+    {
+        public string content_id { get; set; }
+        public YTData ytData { get; set; }
+    }
+
+    public class YTData
+    {
+        public string title { get; set; }
+    }
+
+    private void HandleKeyPress(KeyboardEventArgs e)
+        {
+            if (e.Key == "Enter")
+            {
+                GoSearch();
+            }
+    }
+    private void GoSearch()
+    {
+        if (!string.IsNullOrEmpty(searchQuery))
+        {
+            Navigation.NavigateTo("/search?q=" + searchQuery);
         }
     }
 }

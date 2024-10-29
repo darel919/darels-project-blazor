@@ -5,24 +5,46 @@
     }
     .search-container {
         position: relative;
-        display: flex;
-        align-items: center;
-        /* margin-right:15px; */
+        width: 100% !important;
+        max-width: 600px !important; /* Adjust as needed */
     }
-    
-    .search-container svg {
-        position: absolute;
-        left: 7px;
-        opacity: 0.5;
-        pointer-events: none;
+    #searchInput {
+        width: 100% !important; /* Full width of the container */
+        box-sizing: border-box !important; /* Include padding and border in the element's total width and height */
     }
-    
-    .search-container input {
-        padding-left: 35px;
-        margin-right: 5px;
+    .listbox-container {
+        position: absolute !important;
+        width: fit-content;
+        min-width: 250px;
+        background: white;
+        border: 1px solid #ccc;
+        z-index: 1000; /* Ensure it appears above other elements */
+        max-height: 300px !important; 
+        overflow-y: auto; 
     }
 }
 @media (max-width: 640px) {
+    .search-container {
+        position: relative;
+        width: 100% !important;
+        max-width: 600px !important; /* Adjust as needed */
+    }
+    #searchInput {
+        width: 100% !important; /* Full width of the container */
+        box-sizing: border-box !important; /* Include padding and border in the element's total width and height */
+    }
+
+    .listbox-container {
+        position: absolute !important;
+        background: white;
+        border: 1px solid #ccc;
+        z-index: 1000; /* Ensure it appears above other elements */
+        max-height: 300px !important; /* Set a max height for the listbox */
+        overflow-y: auto; /* Enable vertical scroll if content overflows */
+    }
+    #searchInput {
+        width:100%;
+    }
     svg {
         display: none;
     }
