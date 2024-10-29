@@ -1,22 +1,18 @@
 ﻿@page "/watch"
-@* @rendermode InteractiveServer *@
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
 
 <PageTitle>@fetchedData?.ytData.title - darel's Projects</PageTitle>
 
 <HeadContent>
     <meta name="robots" content="index, follow">
     <meta name="type" content="website">
-    <meta name="author" content="@fetchedData?.submittedBy">
-    <meta name="description" content="Play @fetchedData?.ytData.title at darel's Project">
-
-    <meta property="og:logo" content="https://projects.darelisme.my.id/favicon.png">
-    <meta property="og:type" content="website">
     <meta name="og:title" content="@fetchedData?.ytData.title">
+    <meta name="description" content="Play @fetchedData?.ytData.title at darel's Project">
     <meta name="og:description" content="Play @fetchedData?.ytData.title at darel's Project">
+    <meta name="author" content="@fetchedData?.submittedBy">
     <meta name="og:image" content="@fetchedData?.ytData.videoThumbnails[4].url">
-
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:domain" content="projects.darelisme.my.id">
     <meta name="twitter:title" content="@fetchedData?.ytData.title">
     <meta name="twitter:description" content="Play @fetchedData?.ytData.title at darel's Project">
     <meta name="twitter:image" content="@fetchedData?.ytData.videoThumbnails[4].url">
@@ -25,13 +21,15 @@
 <main id="watchPage">
     @if (fetchedData != null) {
         <div id="videoComponent">
-            <iframe loading="eager" title="Player" allowfullscreen allow="autoplay" src="https://inv.nadeko.net/embed/@fetchedData.vid_uid?autoplay=1&continue=0&related_videos=false&player_style=youtube&local=true&subtitles=id&quality=dash&quality_dash=auto&comments=false&extend_desc=false"></iframe>
+            <iframe loading="eager" title="Player" allowfullscreen allow="autoplay" src="https://inv.nadeko.net/embed/@fetchedData.vid_uid?autoplay=1&continue=0&related_videos=false&player_style=youtube&local=true&subtitles=id&quality=dash&quality_dash=auto&comments=false&extend_desc=false&thinmode=true"></iframe>
             <h1>@fetchedData.ytData.title</h1>
             <h6>Record date: @fetchedData.created_at</h6>
             <h6>@fetchedData.total_views views</h6>
-            <a href="https://youtu.be/@fetchedData.vid_uid" target="_blank" title="Play on YouTube"><h6>Having trouble playing this?</h6></a>
+            <button @onclick="ShareVid">Share Video</button>
+            <a href="https://youtu.be/@fetchedData.vid_uid" target="_blank" title="Play on YouTube">
+                <h6>Having trouble playing this?</h6>
+            </a>
         </div>
-
         <dpOnDotnet.Components.Modules.RecommendationComp CurrentVideoId="@fetchedData.content_id" />
     } else {
         <h6>Loading content...</h6>
@@ -40,11 +38,12 @@
 
 @code {
     private readonly HttpClient httpClient = new HttpClient();
-    
     [SupplyParameterFromQuery(Name = "v")]
     public string VideoID { get; set; }
-    
     public FetchedData fetchedData;
+
+    @inject IJSRuntime JSRuntime
+    @inject NavigationManager Navigation
 
     public class FetchedData {
         public DateTime created_at { get; set; }
@@ -65,16 +64,55 @@
         public string url { get; set; }
     }
 
+    private async Task ShareVid() {
+        var title = fetchedData?.ytData.title;
+        var text = $"Watch {title} on darel's Project!";
+        var url = Navigation.ToAbsoluteUri(Navigation.Uri).ToString();
+
+        await JSRuntime.InvokeVoidAsync("shareContent", title, text, url);
+    }
+
     protected override async Task OnParametersSetAsync() {
         await FetchData();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (shouldScrollToTop) {
+            shouldScrollToTop = false;
+            await ScrollToTop();
+        }
     }
 
     public async Task FetchData() {
         try {
             var apiUrl = $"http://10.10.10.10:328/dp/watch?v={VideoID}";
             fetchedData = await httpClient.GetFromJsonAsync<FetchedData>(apiUrl);
-        } catch(Exception ex) {
+            shouldScrollToTop = true;
+            StateHasChanged(); // Trigger a re-render to call OnAfterRenderAsync
+        } catch (Exception ex) {
             Console.WriteLine($"Error fetching data: {ex.Message}");
         }
     }
+
+    private bool shouldScrollToTop = false;
+
+    private async Task ScrollToTop() {
+        await JSRuntime.InvokeVoidAsync("window.scrollTo", 0, 0);
+    }
 }
+<script>
+    function shareContent(title, text, url) {
+        const shareData = {
+            title: title,
+            text: text,
+            url: url
+        };
+        if (navigator.share) {
+            navigator.share(shareData)
+                .then(() => console.log('Content shared successfully'))
+                .catch((error) => console.error('Error sharing content:', error));
+        } else {
+            console.error("Web Share is not supported in your browser!");
+        }
+    }
+</script>
