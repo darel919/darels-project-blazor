@@ -1,0 +1,40 @@
+
+h6 {
+    font-size: 0.7rem;
+}
+a{
+    text-decoration: none;
+    color: inherit;
+}
+@media (min-width: 768px) {
+    .imgThumbnail {
+        width: 200px !important;
+        margin-right: 1rem;
+        border-radius: 5px;
+    }
+    h1 {
+        font-size: 1.2rem;
+        font-weight: bolder;
+    }
+    .videoPage {
+        display: flex !important;
+        align-items: center !important;
+        padding: 10px 0 10px 0 !important;
+    }
+}
+@media (max-width: 768px) {
+    .imgThumbnail {
+        width: 128px !important;
+        margin-right: 1rem;
+        border-radius: 5px;
+    }
+    h1 {
+        font-size: 1rem;
+        font-weight: bolder;
+    }
+    .videoPage {
+        display: flex !important;
+        align-items: center !important;
+        padding: 15px 0 15px 0 !important;
+    }
+}

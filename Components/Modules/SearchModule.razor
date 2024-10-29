@@ -1,0 +1,23 @@
+﻿@inject HttpClient Http
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<InputText @bind-Value="searchQuery" @oninput="OnSearchInputChanged" placeholder="Type to search..." />
+
+@code {
+    private string searchQuery;
+    private Timer debounceTimer;
+    private const int DebounceDelay = 750; // 500ms delay
+
+     private void OnSearchInputChanged(ChangeEventArgs e) {
+        searchQuery = e.Value.ToString();
+
+        if(!string.IsNullOrEmpty(searchQuery)) {
+            debounceTimer?.Dispose(); // Reset the timer
+            debounceTimer = new Timer(async _ => {
+                Navigation.NavigateTo("/search?q="+searchQuery);
+                 InvokeAsync(StateHasChanged);
+            }, null, DebounceDelay, Timeout.Infinite);
+        }
+    }
+}
