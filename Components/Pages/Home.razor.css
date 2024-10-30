@@ -1,10 +1,22 @@
 
-h6 {
+.videoPage-content h6 {
     font-size: 0.7rem;
+}
+.errorLoad {
+    max-width: 768px;
 }
 a{
     text-decoration: none;
     color: inherit;
+}
+header h1 {
+    font-size: 1.5rem;
+}
+header h5 {
+    font-size: 1.2rem;
+}
+header h6 {
+    font-size: 0.8rem;
 }
 @media (min-width: 768px) {
     .imgThumbnail {
@@ -12,7 +24,7 @@ a{
         margin-right: 1rem;
         border-radius: 5px;
     }
-    h1 {
+    .videoPage-content h1 {
         font-size: 1.2rem;
         font-weight: bolder;
     }
@@ -28,7 +40,7 @@ a{
         margin-right: 1rem;
         border-radius: 5px;
     }
-    h1 {
+    .videoPage-content h1 {
         font-size: 1rem;
         font-weight: bolder;
     }

@@ -1,17 +1,20 @@
 ﻿@page "/watch"
 @rendermode InteractiveServer
-@* @inject IJSRuntime JSRuntime *@
 
 <PageTitle>@fetchedData?.ytData.title - darel's Projects</PageTitle>
 
 <HeadContent>
     <meta name="robots" content="index, follow">
     <meta name="type" content="website">
-    <meta name="og:title" content="@fetchedData?.ytData.title">
+    <meta name="keywords" content="darelisme, darel's project, dp, darelc, dws, web, service">
     <meta name="description" content="Play @fetchedData?.ytData.title at darel's Project">
-    <meta name="og:description" content="Play @fetchedData?.ytData.title at darel's Project">
     <meta name="author" content="@fetchedData?.submittedBy">
+
+    <meta name="og:title" content="@fetchedData?.ytData.title">
+    <meta name="og:description" content="Play @fetchedData?.ytData.title at darel's Project">
     <meta name="og:image" content="@fetchedData?.ytData.videoThumbnails[4].url">
+    <meta name="og:url" content="https://projects.darelisme.my.id/watch?v=@VideoID" />
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@fetchedData?.ytData.title">
     <meta name="twitter:description" content="Play @fetchedData?.ytData.title at darel's Project">
@@ -21,17 +24,24 @@
 <main id="watchPage">
     @if (fetchedData != null) {
         <div id="videoComponent">
-            <iframe loading="eager" title="Player" allowfullscreen allow="autoplay" src="https://inv.nadeko.net/embed/@fetchedData.vid_uid?autoplay=1&continue=0&related_videos=false&player_style=youtube&local=true&subtitles=id&quality=dash&quality_dash=auto&comments=false&extend_desc=false&thinmode=true"></iframe>
+            <iframe class="iplayer" loading="eager" title="Player" allowfullscreen allow="autoplay" src="https://inv.nadeko.net/embed/@fetchedData.vid_uid?autoplay=1&continue=0&related_videos=false&player_style=youtube&local=true&subtitles=id&quality=dash&quality_dash=auto&comments=false&extend_desc=false&thinmode=true">
+            <noscript>Your browser doesn't support JavaScript.</noscript>
+            </iframe>
             <h1>@fetchedData.ytData.title</h1>
             <h6>Record date: @fetchedData.created_at</h6>
             <h6>@fetchedData.total_views views</h6>
-            <button @onclick="ShareVid">Share Video</button>
+            <FluentButton @onclick="ShareVid" IconStart="@(new Icons.Regular.Size20.Share())" Title="Share this video">
+                Share
+            </FluentButton>
             <a href="https://youtu.be/@fetchedData.vid_uid" target="_blank" title="Play on YouTube">
-                <h6>Having trouble playing this?</h6>
+                <FluentButton IconStart="@(new Icons.Regular.Size20.WindowPlay())">
+                    I have problem playing
+                </FluentButton>
             </a>
         </div>
         <dpOnDotnet.Components.Modules.RecommendationComp CurrentVideoId="@fetchedData.content_id" />
     } else {
+        <FluentProgressRing></FluentProgressRing>
         <h6>Loading content...</h6>
     }
 </main>
@@ -112,6 +122,7 @@
                 .then(() => console.log('Content shared successfully'))
                 .catch((error) => console.error('Error sharing content:', error));
         } else {
+            alert("Your browser doesn't support share API!")
             console.error("Web Share is not supported in your browser!");
         }
     }

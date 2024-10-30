@@ -1,34 +1,79 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    @* <div class="sidebar"> *@
-        @* <NavMenu /> *@
-    @* </div> *@
+@* <FluentLayout>
+    <FluentHeader>
+        <NavLink href="/" title="Home" class="navLinks">
+            <img src="/favicon.png"/ alt="Logo" width="64px" height="64px">
+            darel's Project
+        </NavLink>
+        <dpOnDotnet.Components.Modules.SearchModule></dpOnDotnet.Components.Modules.SearchModule>
+    </FluentHeader>
+    <FluentStack Orientation="Orientation.Horizontal" Style="height: 100%;">
+        @if (ShowNav) {
+            <FluentAppBar Width="250" Orientation="Orientation.Vertical">
+                <FluentAppBarItem Href="/"
+                    Match="NavLinkMatch.All"
+                    IconRest="ResourcesIcon()"
+                    IconActive="ResourcesIcon(active: true)"
+                    Text="Home" />
+            </FluentAppBar>
+        }
+        <FluentBodyContent Class="page">
+            <article>
+                @Body
+            </article>
+        </FluentBodyContent>
+    </FluentStack>
+</FluentLayout> *@
 
-    <main>
-        <header class="top-row px-4 ">
-            @* <a href="https://darelisme.my.id/" target="_blank" title="DWS Homepage">at DWS</a> *@
-            @* <a href="/" title="Home">Home</a> *@
-            <NavLink href="/" title="Home" class="navLinks">
-                <img src="/favicon.png"/ alt="Logo" width="64px" height="64px">
-                darel's Project
-            </NavLink>
-            <dpOnDotnet.Components.Modules.SearchModule></dpOnDotnet.Components.Modules.SearchModule>
-        </header>
 
-        <article class="content px-4">
-            @Body
-        </article>
+<FluentDesignTheme @bind-Mode="@Mode"
+    @bind-OfficeColor="@OfficeColor"
+    OnLoaded="@OnLoaded"
+    OnLuminanceChanged="@OnLuminanceChanged"
+    StorageName="theme" />
+<FluentLayout>
+    <header>
+        <NavLink href="/" title="Home" class="navLinks">
+            <img src="/favicon.png"/ alt="Logo" width="64px" height="64px">
+        </NavLink>
+        <dpOnDotnet.Components.Modules.SearchModule></dpOnDotnet.Components.Modules.SearchModule>
+    </header>
+    <FluentStack Orientation="Orientation.Horizontal" Style="height: 100%;">
+        @* <FluentAppBar Orientation="Orientation.Vertical" Class="Navbar">
+            <FluentAppBarItem Href="/"
+                Match="NavLinkMatch.All"
+                IconRest="ResourcesIcon()"
+                IconActive="ResourcesIcon(active: true)"
+                Text="Home" />
+        </FluentAppBar> *@
+        <FluentBodyContent>
+            <article>
+                @Body
+            </article>
+        </FluentBodyContent>
+    </FluentStack>
+</FluentLayout>
 
-        <footer>
-              <a href="https://darelisme.my.id/" target="_blank" title="darelisme Web Service Homepage">DWS</a>
-              <a href="https://github.com/darel919/darels-project/" target="_blank" title="GitHub Page">Projects on GitHub</a>
-        </footer>
-    </main>
-</div>
+@code {
+    bool ShowNav = true;
+    public DesignThemeModes Mode { get; set; }
+    public OfficeColor? OfficeColor { get; set; }
+    void OnLoaded(LoadedEventArgs e)
+    {
+        Console.WriteLine($"Loaded: {(e.Mode == DesignThemeModes.System ? "System" : "")} {(e.IsDark ? "Dark" : "Light")}");
+    }
 
-@* <div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div> *@
+    void OnLuminanceChanged(LuminanceChangedEventArgs e)
+    {
+        Console.WriteLine($"Changed: {(e.Mode == DesignThemeModes.System ? "System" : "")} {(e.IsDark ? "Dark" : "Light")}");
+    }
+    void PickRandomColor()
+    {
+        OfficeColor = OfficeColorUtilities.GetRandom();
+    }
+
+    private static Icon ResourcesIcon(bool active = false) =>
+        active ? new Icons.Filled.Size24.Home()
+               : new Icons.Regular.Size24.Home();
+}

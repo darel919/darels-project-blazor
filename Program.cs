@@ -8,7 +8,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddHttpClient(); // Register HttpClient
 builder.Services.AddSingleton<LibraryConfiguration>();
-
+builder.Services.AddSingleton<GlobalState>();
 
 var app = builder.Build();
 

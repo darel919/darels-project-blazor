@@ -16,8 +16,8 @@
         position: absolute !important;
         width: fit-content;
         min-width: 250px;
-        background: white;
-        border: 1px solid #ccc;
+        background: var(--neutral-fill-layer-rest);
+        /* border: 1px solid #ccc; */
         z-index: 1000; /* Ensure it appears above other elements */
         max-height: 300px !important; 
         overflow-y: auto; 

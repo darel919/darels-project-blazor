@@ -47,12 +47,16 @@
             debounceTimer?.Dispose(); // Reset the timer
             debounceTimer = new Timer(async _ =>
             {
-                var response = await Http.GetFromJsonAsync<Response>($"http://10.10.10.10:328/dp/search?q={searchQuery}");
+            try{
+                    var response = await Http.GetFromJsonAsync<Response>($"http://10.10.10.10:328/dp/search?q={searchQuery}");
                 searchTitles = response?.data.Select(d => new SearchResult
                 {
                     Title = d.ytData.title,
                     ContentId = d.content_id
                 }).ToList() ?? new List<SearchResult>();
+            } catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
                 await InvokeAsync(StateHasChanged);
             }, null, DebounceDelay, Timeout.Infinite);
         }
