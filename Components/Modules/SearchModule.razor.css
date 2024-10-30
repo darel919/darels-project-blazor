@@ -35,9 +35,9 @@
     }
 
     .listbox-container {
+        width: 100%;
         position: absolute !important;
-        background: white;
-        border: 1px solid #ccc;
+        background: var(--neutral-fill-layer-rest);
         z-index: 1000; /* Ensure it appears above other elements */
         max-height: 300px !important; /* Set a max height for the listbox */
         overflow-y: auto; /* Enable vertical scroll if content overflows */

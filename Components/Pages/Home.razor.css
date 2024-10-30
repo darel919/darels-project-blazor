@@ -43,10 +43,19 @@ header h6 {
     .videoPage-content h1 {
         font-size: 1rem;
         font-weight: bolder;
+        font-size: 1rem;
+        /* font-weight: bolder; */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        line-height: 1.2rem;
+        /* max-height: 32px; Limiting to 2 lines */
+        -webkit-line-clamp: 2; /* Specify the number of lines */
+        -webkit-box-orient: vertical;
     }
     .videoPage {
         display: flex !important;
         align-items: center !important;
-        padding: 15px 0 15px 0 !important;
+        padding:10px 0 10px 0 !important;
     }
 }

@@ -59,7 +59,7 @@ footer {
 
 @media (max-width: 640.98px) {
     article {
-        margin-top: 10px;
+        margin-top: 100px;
     }
     .top-row {
         justify-content: space-between;
@@ -70,6 +70,10 @@ footer {
     }
     .Navbar {
         display: none;
+    }
+    .top-row, article {
+        padding-left: 2rem !important;
+        padding-right: 1.5rem !important;
     }
 }
 
