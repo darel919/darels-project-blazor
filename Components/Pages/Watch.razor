@@ -9,11 +9,18 @@
     <meta name="keywords" content="darelisme, darel's project, dp, darelc, dws, web, service">
     <meta name="description" content="Play @fetchedData?.ytData.title at darel's Project">
     <meta name="author" content="@fetchedData?.submittedBy">
-
+    <meta name="keywords" content="darelc,darelisme,darelism,archives">
+    
     <meta name="og:title" content="@fetchedData?.ytData.title">
     <meta name="og:description" content="Play @fetchedData?.ytData.title at darel's Project">
     <meta name="og:image" content="@fetchedData?.ytData.videoThumbnails[4].url">
     <meta name="og:url" content="https://projects.darelisme.my.id/watch?v=@VideoID" />
+
+    <meta property="og:site_name" content="darel's Project">
+    <meta property="og:type" content="video.other">
+    <meta property="og:video:type" content="text/html">
+    <meta property="og:video:width" content="1280">
+    <meta property="og:video:height" content="720">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@fetchedData?.ytData.title">
@@ -24,9 +31,11 @@
 <main id="watchPage">
     @if (fetchedData != null) {
         <div id="videoComponent">
-            <iframe class="iplayer" loading="eager" title="Player" allowfullscreen allow="autoplay" src="https://inv.nadeko.net/embed/@fetchedData.vid_uid?autoplay=1&continue=0&related_videos=false&player_style=youtube&local=true&subtitles=id&quality=dash&quality_dash=auto&comments=false&extend_desc=false&thinmode=true">
+             @* <iframe class="iplayer" loading="eager" title="Player" allowfullscreen allow="autoplay" src="http://10.10.10.10:1104/iplayer?v=@fetchedData.content_id"></iframe> *@
+             <iframe class="iplayer" loading="eager" title="Player" allowfullscreen allow="autoplay" src="https://nuxt-projects.darelisme.my.id/iplayer?v=@fetchedData.content_id"></iframe>
+            @* <iframe class="iplayer" loading="eager" title="Player" allowfullscreen allow="autoplay" src="https://inv.nadeko.net/embed/@fetchedData.vid_uid?autoplay=1&continue=0&related_videos=false&player_style=youtube&local=true&subtitles=id&quality=dash&quality_dash=auto&comments=false&extend_desc=false&thinmode=true"> 
             <noscript>Your browser doesn't support JavaScript.</noscript>
-            </iframe>
+            </iframe> *@
             <h1>@fetchedData.ytData.title</h1>
             <h6>Record date: @fetchedData.created_at</h6>
             <h6>@fetchedData.total_views views</h6>

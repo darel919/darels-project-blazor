@@ -6,6 +6,7 @@
     <div class="search-container">
         <FluentSearch @bind-Value="searchQuery" @bind-Value:after="HandleSearchInput" 
         Placeholder="Type to search..." AutoComplete="true" Immediate="true" 
+        Size="35"
         @onkeydown="HandleKeyPress" Id="searchInput"></FluentSearch>
     </div>
     @if (!string.IsNullOrWhiteSpace(searchQuery) && searchTitles != null)
@@ -48,7 +49,7 @@
             debounceTimer = new Timer(async _ =>
             {
             try{
-                    var response = await Http.GetFromJsonAsync<Response>($"http://10.10.10.10:328/dp/search?q={searchQuery}");
+                var response = await Http.GetFromJsonAsync<Response>($"http://10.10.10.10:328/dp/search?q={searchQuery}");
                 searchTitles = response?.data.Select(d => new SearchResult
                 {
                     Title = d.ytData.title,

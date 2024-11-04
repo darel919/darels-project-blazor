@@ -1,32 +1,5 @@
 ﻿@inherits LayoutComponentBase
 
-@* <FluentLayout>
-    <FluentHeader>
-        <NavLink href="/" title="Home" class="navLinks">
-            <img src="/favicon.png"/ alt="Logo" width="64px" height="64px">
-            darel's Project
-        </NavLink>
-        <dpOnDotnet.Components.Modules.SearchModule></dpOnDotnet.Components.Modules.SearchModule>
-    </FluentHeader>
-    <FluentStack Orientation="Orientation.Horizontal" Style="height: 100%;">
-        @if (ShowNav) {
-            <FluentAppBar Width="250" Orientation="Orientation.Vertical">
-                <FluentAppBarItem Href="/"
-                    Match="NavLinkMatch.All"
-                    IconRest="ResourcesIcon()"
-                    IconActive="ResourcesIcon(active: true)"
-                    Text="Home" />
-            </FluentAppBar>
-        }
-        <FluentBodyContent Class="page">
-            <article>
-                @Body
-            </article>
-        </FluentBodyContent>
-    </FluentStack>
-</FluentLayout> *@
-
-
 <FluentDesignTheme @bind-Mode="@Mode"
     @bind-OfficeColor="@OfficeColor"
     OnLoaded="@OnLoaded"
@@ -37,7 +10,7 @@
         <NavLink href="/" title="Home" class="navLinks">
             <img src="/favicon.png"/ alt="Logo" width="64px" height="64px">
         </NavLink>
-        <dpOnDotnet.Components.Modules.SearchModule></dpOnDotnet.Components.Modules.SearchModule>
+        <div class="searchComponent"><dpOnDotnet.Components.Modules.SearchModule/></div>
     </header>
     <FluentStack Orientation="Orientation.Horizontal" Style="height: 100%;">
         @* <FluentAppBar Orientation="Orientation.Vertical" Class="Navbar">
@@ -51,7 +24,18 @@
             <article>
                 @Body
             </article>
+            <FluentFooter> 
+                <footer>       
+                    @* <a href="/" id="home-nav"><p>darel's Projects</p></a> *@
+                    <nav class="footer-nav">
+                        <a href="/" id="home-nav"><p>darel's Projects</p></a>
+                        <a href="https://darelisme.my.id"><p>at DWS</p></a>
+                        <a href="https://github.com/darel919/darels-project"><p>Projects on GitHub</p></a>
+                    </nav>        
+                </footer>
+            </FluentFooter>
         </FluentBodyContent>
+        
     </FluentStack>
 </FluentLayout>
 

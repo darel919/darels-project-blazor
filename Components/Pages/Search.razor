@@ -94,7 +94,7 @@ else if (isSearching && !string.IsNullOrEmpty(searchQuery))
         if (!string.IsNullOrEmpty(searchQuery))
         {
             searchResults = await FetchSearchResultsAsync(searchQuery);
-            Console.WriteLine($"Results fetched: {searchResults.Count} items"); // Log after fetching
+            @* Console.WriteLine($"Results fetched: {searchResults.Count} items"); // Log after fetching *@
         }
         else
         {

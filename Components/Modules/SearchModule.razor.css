@@ -6,7 +6,7 @@
     .search-container {
         position: relative;
         width: 100% !important;
-        max-width: 600px !important; /* Adjust as needed */
+        /* max-width: 600px !important; */
     }
     #searchInput {
         width: 100% !important; /* Full width of the container */
