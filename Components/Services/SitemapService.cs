@@ -30,7 +30,7 @@ namespace YourNamespace.Services
 
             // Add static URLs
             sitemap.AppendLine(CreateSitemapUrl(_baseUri, "Home", DateTime.UtcNow));
-            sitemap.AppendLine(CreateSitemapUrl($"{_baseUri}about", "About", DateTime.UtcNow));
+            // sitemap.AppendLine(CreateSitemapUrl($"{_baseUri}/about", "About", DateTime.UtcNow));
 
             // Fetch and add video URLs
             var videos = await FetchVideosAsync();
@@ -45,7 +45,7 @@ namespace YourNamespace.Services
 
         private async Task<List<FetchedData>> FetchVideosAsync()
         {
-            var response = await _httpClient.GetAsync("https://darelisme.my.id/api/dp?sortBy=desc");
+            var response = await _httpClient.GetAsync("https://api.darelisme.my.id/dp?sortBy=desc");
             response.EnsureSuccessStatusCode();
             var responseContent = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<List<FetchedData>>(responseContent);

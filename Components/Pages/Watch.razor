@@ -31,11 +31,7 @@
 <main id="watchPage">
     @if (fetchedData != null) {
         <div id="videoComponent">
-             @* <iframe class="iplayer" loading="eager" title="Player" allowfullscreen allow="autoplay" src="http://10.10.10.10:1104/iplayer?v=@fetchedData.content_id"></iframe> *@
              <iframe class="iplayer" loading="eager" title="Player" allowfullscreen allow="autoplay" src="https://nuxt-projects.darelisme.my.id/iplayer?v=@fetchedData.content_id"></iframe>
-            @* <iframe class="iplayer" loading="eager" title="Player" allowfullscreen allow="autoplay" src="https://inv.nadeko.net/embed/@fetchedData.vid_uid?autoplay=1&continue=0&related_videos=false&player_style=youtube&local=true&subtitles=id&quality=dash&quality_dash=auto&comments=false&extend_desc=false&thinmode=true"> 
-            <noscript>Your browser doesn't support JavaScript.</noscript>
-            </iframe> *@
             <h1>@fetchedData.ytData.title</h1>
             <h6>Record date: @fetchedData.created_at</h6>
             <h6>@fetchedData.total_views views</h6>
