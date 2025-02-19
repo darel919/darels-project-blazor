@@ -36,7 +36,7 @@ namespace YourNamespace.Services
             var videos = await FetchVideosAsync();
             foreach (var video in videos)
             {
-                sitemap.AppendLine(CreateSitemapUrl($"{_baseUri}/watch?v={video.content_id}", video.ytData.title, video.created_at));
+                sitemap.AppendLine(CreateSitemapUrl($"{_baseUri}/watch?v={video.content_id}", video.title, video.created_at));
             }
 
             sitemap.AppendLine("</urlset>");
@@ -64,7 +64,7 @@ namespace YourNamespace.Services
         public string content_id { get; set; }
         public string type_id { get; set; }
         public YTData ytData { get; set; }
-        public int total_views { get; set; }
+        public string title { get; set; }
     }
 
     public class YTData

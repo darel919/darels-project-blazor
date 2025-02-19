@@ -2,10 +2,14 @@
 
 <main id="componentParent">
     @if(fetchedVideos != null) {
-        @foreach (var video in fetchedVideos.Where(v => v.content_id != CurrentVideoId)) { // Exclude current video
+        @foreach (var video in fetchedVideos) { 
             <a href="/watch?v=@video.content_id">
                 <div class="videoPage" title="@video.title">
-                    <img class="imgThumbnail" loading="lazy" src="@API/@video.thumbnail" alt="Thumbnail" width="160" title="@video.title"/>
+                    @if(@video.thumbnail != null) {
+                        <img class="imgThumbnail" loading="lazy" src="@API/@video.thumbnail" alt="Thumbnail" width=200/>
+                    } else {
+                        <img class="imgThumbnail" loading="lazy" src="@API/dp/thumb?id=@video.content_id" alt="Thumbnail" width=200/>
+                    }
                     <div>
                         <h2>@video.title</h2>
                         <h6>Recorded at: @video.created_at</h6>
@@ -19,6 +23,7 @@
             </a>
         }
     } else {
+        <FluentProgressRing></FluentProgressRing>
         <p>Loading recommendations...</p>
     }
 </main>
@@ -56,12 +61,30 @@
         await FetchData();
     }
 
-    public async Task FetchData() {
-        try {
-            var apiUrl = $"http://10.10.10.10:328/dp/recommendations";
-            fetchedVideos = await httpClient.GetFromJsonAsync<List<FetchedData>>(apiUrl);
-        } catch(Exception ex) {
-            Console.WriteLine($"Error fetching data: {ex.Message}");
+   public async Task FetchData()
+{
+    try
+    {
+        var apiUrl = $"http://10.10.10.10:328/dp/recommendations";
+
+        var request = new HttpRequestMessage(HttpMethod.Get, apiUrl);
+        request.Headers.Add("requestId", CurrentVideoId);
+
+        var response = await httpClient.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            fetchedVideos = await response.Content.ReadFromJsonAsync<List<FetchedData>>();
+        }
+        else
+        {
+            Console.WriteLine($"Error fetching data: {response.ReasonPhrase}");
         }
     }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error fetching data: {ex.Message}");
+    }
+}
+
 }

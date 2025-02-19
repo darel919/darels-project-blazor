@@ -1,19 +1,19 @@
 ﻿@page "/watch"
 @rendermode InteractiveServer
 
-<PageTitle>@fetchedData?.ytData.title - darel's Projects</PageTitle>
+<PageTitle>@fetchedData?.title - darel's Projects</PageTitle>
 
 <HeadContent>
     <meta name="robots" content="index, follow">
     <meta name="type" content="website">
     <meta name="keywords" content="darelisme, darel's project, dp, darelc, dws, web, service">
-    <meta name="description" content="Play @fetchedData?.ytData.title at darel's Project">
+    <meta name="description" content="Play @fetchedData?.title at darel's Project">
     <meta name="author" content="@fetchedData?.submittedBy">
     <meta name="keywords" content="darelc,darelisme,darelism,archives">
     
-    <meta name="og:title" content="@fetchedData?.ytData.title">
-    <meta name="og:description" content="Play @fetchedData?.ytData.title at darel's Project">
-    <meta name="og:image" content="@fetchedData?.ytData.videoThumbnails[4].url">
+    <meta name="og:title" content="@fetchedData?.title">
+    <meta name="og:description" content="Play @fetchedData?.title at darel's Project">
+    <meta name="og:image" content="@API/@fetchedData?.thumbnail">
     <meta name="og:url" content="https://projects.darelisme.my.id/watch?v=@VideoID" />
 
     <meta property="og:site_name" content="darel's Project">
@@ -23,26 +23,34 @@
     <meta property="og:video:height" content="720">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@fetchedData?.ytData.title">
-    <meta name="twitter:description" content="Play @fetchedData?.ytData.title at darel's Project">
-    <meta name="twitter:image" content="@fetchedData?.ytData.videoThumbnails[4].url">
+    <meta name="twitter:title" content="@fetchedData?.title">
+    <meta name="twitter:description" content="Play @fetchedData?.title at darel's Project">
+    <meta name="twitter:image" content="@API/@fetchedData?.thumbnail">
 </HeadContent>
 
 <main id="watchPage">
     @if (fetchedData != null) {
         <div id="videoComponent">
-             <iframe class="iplayer" loading="eager" title="Player" allowfullscreen allow="autoplay" src="https://nuxt-projects.darelisme.my.id/iplayer?v=@fetchedData.content_id"></iframe>
-            <h1>@fetchedData.ytData.title</h1>
+            <iframe class="iplayer" loading="eager" title="Player" allowfullscreen allow="autoplay encrypted-media accelerometer fullscreen" src="https://iplayer.darelisme.my.id/?v=@fetchedData.content_id"></iframe>
+            <h1>@fetchedData.title</h1>
             <h6>Record date: @fetchedData.created_at</h6>
             <h6>@fetchedData.total_views views</h6>
             <FluentButton @onclick="ShareVid" IconStart="@(new Icons.Regular.Size20.Share())" Title="Share this video">
                 Share
             </FluentButton>
-            <a href="https://youtu.be/@fetchedData.vid_uid" target="_blank" title="Play on YouTube">
-                <FluentButton IconStart="@(new Icons.Regular.Size20.WindowPlay())">
+            @if(@fetchedData.vid_uid != null) {
+                <a href="https://youtu.be/@fetchedData.vid_uid" target="_blank" title="Play on YouTube">
+                    <FluentButton IconStart="@(new Icons.Regular.Size20.WindowPlay())">
+                        I have problem playing
+                    </FluentButton>
+                </a>
+            } else {
+                <FluentButton Disabled IconStart="@(new Icons.Regular.Size20.WindowPlay())" Title="This content is hosted on DP's server.">
                     I have problem playing
                 </FluentButton>
-            </a>
+            }
+           
+            
         </div>
         <dpOnDotnet.Components.Modules.RecommendationComp CurrentVideoId="@fetchedData.content_id" />
     } else {
@@ -52,6 +60,7 @@
 </main>
 
 @code {
+     private readonly string API = "https://api.darelisme.my.id";
     private readonly HttpClient httpClient = new HttpClient();
     [SupplyParameterFromQuery(Name = "v")]
     public string VideoID { get; set; }
@@ -67,20 +76,23 @@
         public string submittedBy { get; set; }
         public int total_views { get; set; }
         public YTData ytData { get; set; }
+        public string thumbnail { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
     }
 
     public class YTData {
         public string title { get; set; }
-        public List<Thumbnail> videoThumbnails { get; set; }
+        @* public List<Thumbnail> videoThumbnails { get; set; } *@
         public string description { get; set; }
     }
 
-    public class Thumbnail {
+    @* public class Thumbnail {
         public string url { get; set; }
-    }
+    } *@
 
     private async Task ShareVid() {
-        var title = fetchedData?.ytData.title;
+        var title = fetchedData?.title;
         var text = $"Watch {title} on darel's Project!";
         var url = Navigation.ToAbsoluteUri(Navigation.Uri).ToString();
 

@@ -21,7 +21,12 @@
     @foreach (var video in fetchedVideos) {
         <a href="/watch?v=@video.content_id">
             <div class="videoPage" title="@video.title">
-                <img class="imgThumbnail" loading="lazy" src="@API/@video.thumbnail" alt="Thumbnail" width=200/>
+                @if(@video.thumbnail != null) {
+                    <img class="imgThumbnail" loading="lazy" src="@API/@video.thumbnail" alt="Thumbnail" width=200/>
+                } else {
+                    <img class="imgThumbnail" loading="lazy" src="@API/dp/thumb?id=@video.content_id" alt="Thumbnail" width=200/>
+                }
+                
                 <div class="videoPage-content">
                     <h1>@video.title</h1>
                     <h6>Recorded at: @video.created_at</h6>
