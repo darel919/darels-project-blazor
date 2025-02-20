@@ -1,4 +1,4 @@
-﻿
+﻿@page "/relativetime"
 
 <main id="componentParent">
     @if(fetchedVideos != null) {
@@ -12,8 +12,8 @@
                     }
                     <div>
                         <h2>@video.title</h2>
-                        <h6>Recorded at: @video.created_at</h6>
-                        @if(video.total_views>0) {
+                        <h6>@video.created_at.GetTimeAgo()</h6>
+                        @if(video.total_views > 0) {
                             <h6>@video.total_views views</h6>
                         } else {
                             <h6>No views</h6>
@@ -42,9 +42,9 @@
         public string content_id { get; set; }
         public string submittedBy { get; set; }
         public YTData ytData { get; set; }
-        public string thumbnail {get; set;}
-        public string title {get; set;}
-        public int total_views {get; set;}
+        public string thumbnail { get; set; }
+        public string title { get; set; }
+        public int total_views { get; set; }
     }
 
     public class YTData {
@@ -57,34 +57,34 @@
         public string url { get; set; }
     }
 
-    protected override async Task OnParametersSetAsync() {
+    protected override async Task OnParametersSetAsync()
+    {
         await FetchData();
     }
 
-   public async Task FetchData()
-{
-    try
+    public async Task FetchData()
     {
-        var apiUrl = $"http://10.10.10.10:328/dp/recommendations";
-
-        var request = new HttpRequestMessage(HttpMethod.Get, apiUrl);
-        request.Headers.Add("requestId", CurrentVideoId);
-
-        var response = await httpClient.SendAsync(request);
-
-        if (response.IsSuccessStatusCode)
+        try
         {
-            fetchedVideos = await response.Content.ReadFromJsonAsync<List<FetchedData>>();
+            var apiUrl = $"http://10.10.10.10:328/dp/recommendations";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, apiUrl);
+            request.Headers.Add("requestId", CurrentVideoId);
+
+            var response = await httpClient.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                fetchedVideos = await response.Content.ReadFromJsonAsync<List<FetchedData>>();
+            }
+            else
+            {
+                Console.WriteLine($"Error fetching data: {response.ReasonPhrase}");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            Console.WriteLine($"Error fetching data: {response.ReasonPhrase}");
+            Console.WriteLine($"Error fetching data: {ex.Message}");
         }
     }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error fetching data: {ex.Message}");
-    }
-}
-
 }

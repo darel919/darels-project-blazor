@@ -67,3 +67,5 @@ temp/
 # Ignore others
 .DS_Store
 *.swp
+
+wwwroot/sitemap.xml

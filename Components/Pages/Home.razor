@@ -1,15 +1,17 @@
 ﻿@page "/"
 @inject NavigationManager Navigation
+@page "/relativetime"
 
 <PageTitle>darel's Project Home</PageTitle>
 <HeadContent>
-    <meta name=”robots” content="index, follow">
+    <meta name="robots" content="index, follow">
     <meta name="type" content="website">
     <meta name="og:title" content="darel's Video Project">
     <meta name="description" content="Watch all of my archived video works on darel's Project">
     <meta name="og:description" content="Watch all of my archived video works on darel's Project">
     <meta name="twitter:title" content="darel's Video Project">
     <meta name="twitter:description" content="Watch all of my archived video works on darel's Project">
+    <meta name="keywords" content="darelisme, dp, darelisme projects, projects, darelc, darelc_, darel's project, dws, web">
 </HeadContent>
 
 @if(!isLoading && fetchedVideos != null) {
@@ -29,7 +31,7 @@
                 
                 <div class="videoPage-content">
                     <h1>@video.title</h1>
-                    <h6>Recorded at: @video.created_at</h6>
+                    <h6>@video.created_at.GetTimeAgo()</h6>
                     @if(video.total_views > 0) {
                         <h6>@video.total_views views</h6>
                     } else {

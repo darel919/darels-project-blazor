@@ -6,14 +6,14 @@
 <HeadContent>
     <meta name="robots" content="index, follow">
     <meta name="type" content="website">
-    <meta name="keywords" content="darelisme, darel's project, dp, darelc, dws, web, service">
+    <meta name="keywords" content="@fetchedData?.title">
     <meta name="description" content="Play @fetchedData?.title at darel's Project">
     <meta name="author" content="@fetchedData?.submittedBy">
     <meta name="keywords" content="darelc,darelisme,darelism,archives">
     
     <meta name="og:title" content="@fetchedData?.title">
     <meta name="og:description" content="Play @fetchedData?.title at darel's Project">
-    <meta name="og:image" content="@API/@fetchedData?.thumbnail">
+    <meta name="og:image" content="@API/dp/thumb?id=@VideoID">
     <meta name="og:url" content="https://projects.darelisme.my.id/watch?v=@VideoID" />
 
     <meta property="og:site_name" content="darel's Project">
@@ -25,7 +25,10 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@fetchedData?.title">
     <meta name="twitter:description" content="Play @fetchedData?.title at darel's Project">
-    <meta name="twitter:image" content="@API/@fetchedData?.thumbnail">
+    <meta name="twitter:image" content="@API/dp/thumb?id=@VideoID">
+
+    <meta itemprop="interactionCount" content="@fetchedData?.total_views">
+    <meta itemprop="uploadDate" content="@fetchedData?.created_at">
 </HeadContent>
 
 <main id="watchPage">
