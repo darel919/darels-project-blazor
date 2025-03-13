@@ -5,6 +5,7 @@ obj/
 **/obj/
 .vs/
 **/.vs
+wwwroot/
 
 # Ignore user-specific files
 *.user
@@ -68,4 +69,5 @@ temp/
 .DS_Store
 *.swp
 
+#ignore wwwroot
 wwwroot/sitemap.xml

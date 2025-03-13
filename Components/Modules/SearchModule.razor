@@ -52,8 +52,8 @@
                 var response = await Http.GetFromJsonAsync<Response>($"http://10.10.10.10:328/dp/search?q={searchQuery}");
                 searchTitles = response?.data.Select(d => new SearchResult
                 {
-                    Title = d.ytData.title,
-                    ContentId = d.content_id
+                    Title = d.yt_data.title,
+                    ContentId = d.id
                 }).ToList() ?? new List<SearchResult>();
             } catch (Exception ex) {
                 Console.WriteLine(ex.Message);
@@ -70,11 +70,11 @@
 
     public class FetchedData
     {
-        public string content_id { get; set; }
-        public YTData ytData { get; set; }
+        public string id { get; set; }
+        public yt_data yt_data { get; set; }
     }
 
-    public class YTData
+    public class yt_data
     {
         public string title { get; set; }
     }

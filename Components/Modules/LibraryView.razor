@@ -1,0 +1,115 @@
+@using dpOnDotnet.Components.Models
+@using System
+@using dpOnDotnet.Components.Modules
+
+<div class="library-container">
+    @if (!string.IsNullOrEmpty(Title))
+    {
+        <h1>@Title</h1>
+    }
+
+    @if (!string.IsNullOrEmpty(Subtitle))
+    {
+        <h4>@Subtitle</h4>
+    }
+
+    @if (IsLoading)
+    {
+        <div class="loading-indicator">
+            <p>Loading videos...</p>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="error-message">
+            <p>@ErrorMessage</p>
+        </div>
+    }
+    else if (Videos == null || Videos.Count == 0)
+    {
+        <div class="no-videos">
+            <p>No videos found.</p>
+        </div>
+    }
+    else
+    {
+        <div class="video-grid">
+            @foreach (var video in Videos)
+            {
+                <a href="/watch?v=@video.id">
+                    <div class="video-container" title="@(video.title ?? video.yt_data?.title)">
+                        <img src="@ApiBaseUrl/dp/thumb?id=@video.id" alt="Thumbnail" loading="lazy" />
+                        <div class="video-info">
+                            <h3>@(video.title ?? video.yt_data?.title)</h3>
+                            <p>@FormatTimeAgo(video.createdDate ?? ParseDate(video.created))</p>
+                            @if (video.total_views > 0) 
+                            {
+                                <p>@video.total_views views</p>
+                            }
+                            else 
+                            {
+                                <p>No views</p>
+                            }
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<FetchedData>? Videos { get; set; }
+    
+    [Parameter]
+    public bool IsLoading { get; set; }
+    
+    [Parameter]
+    public string ErrorMessage { get; set; } = "";
+    
+    [Parameter]
+    public string Title { get; set; } = "";
+    
+    [Parameter]
+    public string Subtitle { get; set; } = "";
+    
+    [Parameter]
+    public string ApiBaseUrl { get; set; } = "http://10.10.10.10:328";
+
+    private DateTime? ParseDate(string? dateString)
+    {
+        if (string.IsNullOrEmpty(dateString))
+            return null;
+            
+        try
+        {
+            // Try to parse the date from the format provided by your API
+            return DateTime.ParseExact(
+                dateString.Substring(0, Math.Min(19, dateString.Length)),
+                "yyyy-MM-dd HH:mm:ss", 
+                System.Globalization.CultureInfo.InvariantCulture
+            );
+        }
+        catch
+        {
+            try
+            {
+                // Fallback to general parsing
+                return DateTime.Parse(dateString);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+    }
+
+    private string FormatTimeAgo(DateTime? dateTime)
+    {
+        if (dateTime == null)
+            return "Unknown date";
+            
+        return DateTimeExtensions.GetTimeAgo(dateTime.Value);
+    }
+}

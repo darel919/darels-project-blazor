@@ -1,0 +1,142 @@
+a{
+    text-decoration: none;
+    color: inherit;
+}
+h1 {
+    font-size: 2rem;
+}
+h4 {
+    font-size: 1rem;
+}
+.library-container {
+    padding: 1rem;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.video-container {
+    /* background-color: var(--neutral-layer-2); */
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+
+}
+
+.video-container:hover {
+    transform: translateY(-5px);
+}
+
+.video-container img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+.video-info {
+    padding: 0.8rem;
+}
+
+.video-info h3 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.video-info p {
+    margin: 0.25rem 0;
+    font-size: 0.8rem;
+    color: var(--neutral-foreground-hint);
+}
+
+.loading-indicator,
+.error-message,
+.no-videos {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+@media (min-width: 641px) {
+    .video-container {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+}
+@media (max-width: 640px) {
+    .library-container {
+        padding: 0.5rem;
+    }
+    
+    .video-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+    
+    .video-container {
+        display: flex;
+        flex-direction: row;
+        height: 100px;
+    }
+    
+    .video-container img {
+        width: 120px;
+        height: 100%;
+        aspect-ratio: auto;
+    }
+    
+    .video-info {
+        padding: 0.5rem 0 0.5rem 1rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+    }
+    
+    .video-info h3 {
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .video-info p {
+        font-size: 0.7rem;
+    }
+    
+    .loading-indicator,
+    .error-message,
+    .no-videos {
+        padding: 1rem;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Add styles for even smaller screens */
+@media (max-width: 320px) {
+    .video-container {
+        height: 80px;
+    }
+    
+    .video-container img {
+        width: 100px;
+    }
+    
+    .video-info h3 {
+        font-size: 0.8rem;
+    }
+    
+    .video-info p {
+        font-size: 0.6rem;
+    }
+}

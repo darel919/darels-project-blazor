@@ -1,0 +1,62 @@
+@page "/categories"
+@inject NavigationManager Navigation
+
+<h3>Categories</h3>
+
+@if (fetchedCategory != null) {
+    @foreach (var category in fetchedCategory) {
+        <a href="/category?id=@category.id">
+            <div class="categoryItems">
+                <h1>@category.title</h1>
+                <h6>@category.desc</h6>
+            </div>
+        </a>
+    }
+} 
+
+
+@code {
+    private readonly HttpClient httpClient = new HttpClient();
+    private string errorMessage;
+    public List<CategoryData> fetchedCategory;
+
+    // Renamed class to avoid conflicts with any pre-compiled version
+    public class CategoryData {
+        public string collectionId { get; set; }
+        public string collectionName { get; set; }
+        public string created { get; set; }
+        public string desc { get; set; }
+        public string id { get; set; }
+        public string title { get; set; }
+        public string updated { get; set; }
+        
+        // Optional helper methods to convert strings to DateTime if needed
+        public DateTime CreatedDateTime => DateTime.TryParse(created, out var dt) ? dt : DateTime.MinValue;
+        public DateTime UpdatedDateTime => DateTime.TryParse(updated, out var dt) ? dt : DateTime.MinValue;
+    }
+    
+    protected override async Task OnInitializedAsync() {
+        try {
+            var response = await httpClient.GetAsync("http://10.10.10.10:328/dp/categories");
+            @* Console.WriteLine(response); *@
+            if (response.IsSuccessStatusCode) {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                @* Console.WriteLine($"Response content: {responseContent}"); *@
+                
+                // Use the renamed class
+                fetchedCategory = System.Text.Json.JsonSerializer.Deserialize<List<CategoryData>>(
+                    responseContent,
+                    new System.Text.Json.JsonSerializerOptions { 
+                        PropertyNameCaseInsensitive = true 
+                    }
+                );
+            }
+            else {
+                errorMessage = $"Error: {response.StatusCode}";
+            }
+        } catch (Exception ex) {
+            errorMessage = $"{ex.Message}";
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}

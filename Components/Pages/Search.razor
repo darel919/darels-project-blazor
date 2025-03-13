@@ -1,4 +1,7 @@
 ﻿@page "/search"
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using dpOnDotnet.Components.Models
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
@@ -11,26 +14,9 @@
 
 @if (searchResults != null && !string.IsNullOrEmpty(searchQuery)) {
     <h5>@searchResults.Count videos found with query "@searchQuery"</h5>
-    @foreach (var video in searchResults)
-    {
-        <a href="/watch?v=@video.content_id">
-            <div class="videoPage" title="@video.ytData.title">
-                <img class="imgThumbnail" loading="lazy" src="@video.ytData.videoThumbnails[4].url" alt="Thumbnail" width=200 />
-                <div>
-                    <h1>@video.ytData.title</h1>
-                    <h6>Recorded at: @video.created_at</h6>
-                    @if (video.total_views > 0) 
-                    {
-                        <h6>@video.total_views views</h6>
-                    }
-                    else 
-                    {
-                        <h6>No views</h6>
-                    }
-                </div>
-            </div>
-        </a>
-    }
+    
+    <!-- Instead of foreach loop, use the LibraryView component -->
+    <dpOnDotnet.Components.Modules.LibraryView Videos="@searchResults" />
 }
 @if(searchResults == null) {
     <h1>No results for @searchQuery</h1>
@@ -41,37 +27,23 @@ else if (isSearching && !string.IsNullOrEmpty(searchQuery))
 }
 
 @code {
-    private string searchQuery;
+    private readonly string API = "https://api.darelisme.my.id";
+    private string? searchQuery;
     private List<FetchedData> searchResults = new List<FetchedData>();
     private bool isSearching;
-    private Timer debounceTimer;
-    public class FetchedData {
-        public DateTime created_at { get; set; }
-        public string content_id { get; set; }
-        public string type_id { get; set; }
-        public YTData ytData { get; set; }
-        public int total_views { get; set; }
-    }
-
-    public class Thumbnail {
-        public string url { get; set; }
-    }
-
-    public class YTData {
-        public string title { get; set; }
-        public List<Thumbnail> videoThumbnails { get; set; }
-    }
+    private System.Threading.Timer? debounceTimer;
 
     protected override void OnInitialized()
     {
         Navigation.LocationChanged += OnLocationChanged;
     }
+    
     protected override async Task OnInitializedAsync()
     {
         await HandleLocationChanged();
     }
 
-    private void OnLocationChanged(object sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
     {
         _ = HandleLocationChanged();
     }
@@ -86,6 +58,7 @@ else if (isSearching && !string.IsNullOrEmpty(searchQuery))
         if (!string.IsNullOrEmpty(searchQuery)) {
             await FetchSearchResults();
         }
+        isSearching = false;
         StateHasChanged(); 
     }
 
@@ -94,7 +67,6 @@ else if (isSearching && !string.IsNullOrEmpty(searchQuery))
         if (!string.IsNullOrEmpty(searchQuery))
         {
             searchResults = await FetchSearchResultsAsync(searchQuery);
-            @* Console.WriteLine($"Results fetched: {searchResults.Count} items"); // Log after fetching *@
         }
         else
         {
@@ -106,7 +78,14 @@ else if (isSearching && !string.IsNullOrEmpty(searchQuery))
     {
         try
         {
-            var response = await Http.GetFromJsonAsync<Response>($"http://10.10.10.10:328/dp/search?q={query}");
+            // Use direct IP address for fetching videos
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            
+            var response = await Http.GetFromJsonAsync<Response>(
+                $"http://10.10.10.10:328/dp/search?q={query}", options);
             isSearching = false;
             return response?.data ?? new List<FetchedData>();
         }
@@ -115,11 +94,6 @@ else if (isSearching && !string.IsNullOrEmpty(searchQuery))
             isSearching = false;
             Console.WriteLine($"Error fetching search results: {ex.Message}");
             return new List<FetchedData>();
-
         }
-    }
-
-    public class Response {
-        public List<FetchedData> data { get; set; }
     }
 }

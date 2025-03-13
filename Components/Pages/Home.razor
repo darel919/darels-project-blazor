@@ -1,6 +1,9 @@
 ﻿@page "/"
 @inject NavigationManager Navigation
 @page "/relativetime"
+@using System.Globalization
+@using System.Text.Json
+@using dpOnDotnet.Components.Models
 
 <PageTitle>darel's Project Home</PageTitle>
 <HeadContent>
@@ -14,69 +17,20 @@
     <meta name="keywords" content="darelisme, dp, darelisme projects, projects, darelc, darelc_, darel's project, dws, web">
 </HeadContent>
 
-@if(!isLoading && fetchedVideos != null) {
-    <header>
-        <h1>Welcome to darel's Projects</h1>
-        <h5>@fetchedVideos.Count videos total</h5>
-        <h6>What do you want to watch today?</h6>
-    </header>
-    @foreach (var video in fetchedVideos) {
-        <a href="/watch?v=@video.content_id">
-            <div class="videoPage" title="@video.title">
-                @if(@video.thumbnail != null) {
-                    <img class="imgThumbnail" loading="lazy" src="@API/@video.thumbnail" alt="Thumbnail" width=200/>
-                } else {
-                    <img class="imgThumbnail" loading="lazy" src="@API/dp/thumb?id=@video.content_id" alt="Thumbnail" width=200/>
-                }
-                
-                <div class="videoPage-content">
-                    <h1>@video.title</h1>
-                    <h6>@video.created_at.GetTimeAgo()</h6>
-                    @if(video.total_views > 0) {
-                        <h6>@video.total_views views</h6>
-                    } else {
-                        <h6>No views</h6>
-                    }
-                </div>
-            </div>
-        </a>
-    }
-} else if(isLoading) {
-    <FluentProgressRing></FluentProgressRing>
-    <h1>Loading content...</h1>
-} else if(!string.IsNullOrEmpty(errorMessage)) {
-    <div class="errorLoad">
-        <h2>Oops!</h2>
-        <h5>There was a problem while we trying to contact the server. Sorry for that!</h5>
-        <h6>Error:<br> @errorMessage</h6>
-    </div>
-}
+<dpOnDotnet.Components.Modules.LibraryView 
+    Videos="@fetchedVideos" 
+    IsLoading="@isLoading" 
+    ErrorMessage="@errorMessage" 
+    Title="Welcome to darel's Projects"
+    Subtitle="What do you want to watch today?"
+    ApiBaseUrl="@API" />
 
 @code {
     private readonly string API = "https://api.darelisme.my.id";
     private readonly HttpClient httpClient = new HttpClient();
     private bool isLoading = true;
-    private string errorMessage;
-    public List<FetchedData> fetchedVideos;
-
-    public class Thumbnail {
-        public string url { get; set; }
-    }
-
-    public class YTData {
-        public string title { get; set; }
-        public List<Thumbnail> videoThumbnails { get; set; }
-    }
-
-    public class FetchedData {
-        public DateTime created_at { get; set; }
-        public string content_id { get; set; }
-        public string type_id { get; set; }
-        public YTData ytData { get; set; }
-        public string title {get; set;}
-        public string thumbnail {get; set;}
-        public int total_views { get; set; }
-    }
+    private string errorMessage = "";
+    private List<FetchedData> fetchedVideos = new();
 
     protected override async Task OnInitializedAsync() {
         isLoading = true;
@@ -84,7 +38,55 @@
             var response = await httpClient.GetAsync("http://10.10.10.10:328/dp?sortBy=desc");
             if (response.IsSuccessStatusCode) {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                fetchedVideos = System.Text.Json.JsonSerializer.Deserialize<List<FetchedData>>(responseContent);
+                
+                // Use intermediate class with string date field
+                var tempData = JsonSerializer.Deserialize<List<TempFetchedData>>(responseContent);
+                fetchedVideos = new List<FetchedData>();
+                
+                if (tempData != null)
+                {
+                    foreach (var item in tempData)
+                    {
+                        try {
+                            // Store both string date and parsed DateTime
+                            DateTime parsedDate = DateTime.ParseExact(
+                                item.created.Substring(0, 19),
+                                "yyyy-MM-dd HH:mm:ss", 
+                                System.Globalization.CultureInfo.InvariantCulture
+                            );
+                            
+                            fetchedVideos.Add(new FetchedData {
+                                created = item.created,
+                                createdDate = parsedDate,
+                                id = item.id,
+                                category = item.category,
+                                yt_data = new YtData {
+                                    title = item.yt_data?.title,
+                                    videoThumbnails = item.yt_data?.videoThumbnails?.Select(t => new Thumbnail { url = t.url }).ToList(),
+                                    description = item.yt_data?.description
+                                },
+                                title = item.title,
+                                total_views = item.total_views
+                            });
+                        }
+                        catch {
+                            // Fallback with just the string date
+                            fetchedVideos.Add(new FetchedData {
+                                created = item.created,
+                                id = item.id,
+                                category = item.category,
+                                yt_data = new YtData {
+                                    title = item.yt_data?.title,
+                                    videoThumbnails = item.yt_data?.videoThumbnails?.Select(t => new Thumbnail { url = t.url }).ToList(),
+                                    description = item.yt_data?.description
+                                },
+                                title = item.title,
+                                total_views = item.total_views
+                            });
+                        }
+                    }
+                }
+                
                 isLoading = false;
             }
             isLoading = false;
@@ -92,5 +94,25 @@
             isLoading = false;
             errorMessage = $"{ex.Message}";
         }
+    }
+
+    // Add this class for temporary deserialization
+    public class TempFetchedData {
+        public string created { get; set; } = "";
+        public string id { get; set; } = "";
+        public string[]? category { get; set; }
+        public TempYtData? yt_data { get; set; }
+        public string title { get; set; } = "";
+        public int total_views { get; set; }
+    }
+    
+    public class TempYtData {
+        public string? title { get; set; }
+        public List<TempThumbnail>? videoThumbnails { get; set; }
+        public string? description { get; set; }
+    }
+    
+    public class TempThumbnail {
+        public string url { get; set; } = "";
     }
 }

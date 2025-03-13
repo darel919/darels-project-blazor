@@ -1,18 +1,17 @@
 ﻿@page "/relativetime"
+@using System.Text.Json
+@using System.Globalization
+@using System.Net.Http.Json
 
 <main id="componentParent">
     @if(fetchedVideos != null) {
         @foreach (var video in fetchedVideos) { 
-            <a href="/watch?v=@video.content_id">
+            <a href="/watch?v=@video.id">
                 <div class="videoPage" title="@video.title">
-                    @if(@video.thumbnail != null) {
-                        <img class="imgThumbnail" loading="lazy" src="@API/@video.thumbnail" alt="Thumbnail" width=200/>
-                    } else {
-                        <img class="imgThumbnail" loading="lazy" src="@API/dp/thumb?id=@video.content_id" alt="Thumbnail" width=200/>
-                    }
+                    <img class="imgThumbnail" loading="lazy" src="@API/dp/thumb?id=@video.id" alt="Thumbnail" width=200/>
                     <div>
                         <h2>@video.title</h2>
-                        <h6>@video.created_at.GetTimeAgo()</h6>
+                        <h6>@video.created.GetTimeAgo()</h6>
                         @if(video.total_views > 0) {
                             <h6>@video.total_views views</h6>
                         } else {
@@ -23,8 +22,8 @@
             </a>
         }
     } else {
-        <FluentProgressRing></FluentProgressRing>
-        <p>Loading recommendations...</p>
+        @* <FluentProgressRing></FluentProgressRing> *@
+        <p>Unable to get recommendations for this video.</p>
     }
 </main>
 
@@ -37,17 +36,31 @@
     public List<FetchedData> fetchedVideos;
 
     public class FetchedData {
-        public DateTime created_at { get; set; }
-        public string vid_uid { get; set; }
-        public string content_id { get; set; }
-        public string submittedBy { get; set; }
-        public YTData ytData { get; set; }
+        public DateTime created { get; set; }
+        public string yt_vid_id { get; set; }
+        public string id { get; set; }
+        public string creator { get; set; }
+        public yt_data yt_data { get; set; }
         public string thumbnail { get; set; }
         public string title { get; set; }
         public int total_views { get; set; }
+        public string[] category { get; set; } // Add to match API response
     }
 
-    public class YTData {
+    // Temporary model for initial deserialization with string dates
+    public class TempFetchedData {
+        public string created { get; set; }
+        public string yt_vid_id { get; set; }
+        public string id { get; set; }
+        public string creator { get; set; }
+        public yt_data yt_data { get; set; }
+        public string thumbnail { get; set; }
+        public string title { get; set; }
+        public int total_views { get; set; }
+        public string[] category { get; set; } // Add to match API response
+    }
+
+    public class yt_data {
         public string title { get; set; }
         public List<Thumbnail> videoThumbnails { get; set; }
         public string description { get; set; }
@@ -72,10 +85,64 @@
             request.Headers.Add("requestId", CurrentVideoId);
 
             var response = await httpClient.SendAsync(request);
-
+            @* Console.WriteLine($"Response status: {response.StatusCode}"); *@
             if (response.IsSuccessStatusCode)
             {
-                fetchedVideos = await response.Content.ReadFromJsonAsync<List<FetchedData>>();
+                // Get the raw JSON content
+                var responseContent = await response.Content.ReadAsStringAsync();
+                
+                // First deserialize to temporary objects with string dates
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                
+                var tempData = JsonSerializer.Deserialize<List<TempFetchedData>>(responseContent, options);
+                fetchedVideos = new List<FetchedData>();
+                
+                foreach (var item in tempData)
+                {
+                    try
+                    {
+                        // Parse the date with explicit format for better reliability
+                        DateTime parsedDate = DateTime.ParseExact(
+                            item.created.Substring(0, 19), // Take only "2025-02-17 00:00:00" part
+                            "yyyy-MM-dd HH:mm:ss", 
+                            CultureInfo.InvariantCulture
+                        );
+                        
+                        fetchedVideos.Add(new FetchedData
+                        {
+                            created = parsedDate,
+                            id = item.id,
+                            category = item.category,
+                            creator = item.creator,
+                            yt_data = item.yt_data,
+                            yt_vid_id = item.yt_vid_id,
+                            thumbnail = item.thumbnail,
+                            title = item.title,
+                            total_views = item.total_views
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error parsing date '{item.created}': {ex.Message}");
+                        
+                        // Add with minimum date if parsing fails
+                        fetchedVideos.Add(new FetchedData
+                        {
+                            created = DateTime.MinValue,
+                            id = item.id,
+                            category = item.category,
+                            creator = item.creator,
+                            yt_data = item.yt_data,
+                            yt_vid_id = item.yt_vid_id,
+                            thumbnail = item.thumbnail,
+                            title = item.title,
+                            total_views = item.total_views
+                        });
+                    }
+                }
             }
             else
             {

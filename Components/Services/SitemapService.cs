@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-
+using System.Globalization;
 namespace YourNamespace.Services
 {
     public interface ISitemapService
@@ -36,7 +36,7 @@ namespace YourNamespace.Services
             var videos = await FetchVideosAsync();
             foreach (var video in videos)
             {
-                sitemap.AppendLine(CreateSitemapUrl($"{_baseUri}/watch?v={video.content_id}", video.title, video.created_at));
+                sitemap.AppendLine(CreateSitemapUrl($"{_baseUri}/watch?v={video.id}", video.title, video.created));
             }
 
             sitemap.AppendLine("</urlset>");
@@ -44,12 +44,68 @@ namespace YourNamespace.Services
         }
 
         private async Task<List<FetchedData>> FetchVideosAsync()
+{
+    var response = await _httpClient.GetAsync("https://api.darelisme.my.id/dp?sortBy=desc");
+    response.EnsureSuccessStatusCode();
+    var responseContent = await response.Content.ReadAsStringAsync();
+    
+    // Use TempFetchedData to handle string dates directly
+    var options = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    // Skip trying to deserialize directly to FetchedData and go straight to the fallback approach
+    var tempData = JsonSerializer.Deserialize<List<TempFetchedData>>(responseContent, options);
+    var result = new List<FetchedData>();
+    
+    foreach (var item in tempData)
+    {
+        try
         {
-            var response = await _httpClient.GetAsync("https://api.darelisme.my.id/dp?sortBy=desc");
-            response.EnsureSuccessStatusCode();
-            var responseContent = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<FetchedData>>(responseContent);
+            // Parse with explicit format for better reliability
+            DateTime parsedDate = DateTime.ParseExact(
+                item.created.Substring(0, 19), // Take only "2025-02-17 00:00:00" part
+                "yyyy-MM-dd HH:mm:ss", 
+                System.Globalization.CultureInfo.InvariantCulture
+            );
+                
+            result.Add(new FetchedData
+            {
+                created = parsedDate,
+                id = item.id,
+                category = item.category,
+                yt_data = item.yt_data,
+                title = item.title
+            });
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error parsing date '{item.created}': {ex.Message}");
+            // Add with minimum date if parsing fails
+            result.Add(new FetchedData
+            {
+                created = DateTime.MinValue,
+                id = item.id,
+                category = item.category,
+                yt_data = item.yt_data,
+                title = item.title
+            });
+        }
+    }
+    
+    return result;
+}
+
+// Add this temporary class for fallback parsing
+public class TempFetchedData
+{
+    public string created { get; set; } // As string instead of DateTime
+    public string id { get; set; }
+    public string[] category { get; set; }
+    public yt_data yt_data { get; set; }
+    public string title { get; set; }
+}
 
         private string CreateSitemapUrl(string loc, string title, DateTime lastMod)
         {
@@ -59,15 +115,15 @@ namespace YourNamespace.Services
     }
 
     public class FetchedData
-    {
-        public DateTime created_at { get; set; }
-        public string content_id { get; set; }
-        public string type_id { get; set; }
-        public YTData ytData { get; set; }
-        public string title { get; set; }
-    }
+{
+    public DateTime created { get; set; }
+    public string id { get; set; }
+    public string[] category { get; set; }  // Changed from string to string[]
+    public yt_data yt_data { get; set; }
+    public string title { get; set; }
+}
 
-    public class YTData
+    public class yt_data
     {
         public string title { get; set; }
         public List<Thumbnail> videoThumbnails { get; set; }
