@@ -3,14 +3,16 @@ using Microsoft.Extensions.Hosting;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
+using Microsoft.AspNetCore.Hosting;
 
-namespace YourNamespace.Services
+namespace dpOnDotnet.Components.Services
 {
     public class SitemapTask : IHostedService
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IWebHostEnvironment _env;
-        private Timer _timer;
+        private Timer? _timer;
 
         public SitemapTask(IServiceScopeFactory scopeFactory, IWebHostEnvironment env)
         {
@@ -24,7 +26,7 @@ namespace YourNamespace.Services
             return Task.CompletedTask;
         }
 
-        private async void ExecuteTask(object state)
+        private async void ExecuteTask(object? state)
         {
             using (var scope = _scopeFactory.CreateScope())
             {

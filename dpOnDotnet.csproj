@@ -3,12 +3,16 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
+    <EnableDefaultScopedCssItems>true</EnableDefaultScopedCssItems>
+    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.10.3" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.10.3" />
     <PackageReference Include="TimeAgo" Version="1.0.8" />
+    <SupportedPlatform Include="browser" />
+    <Content Update="**\*.razor.css" CssScope="scopedcss" />
   </ItemGroup>
-  
 
 </Project>

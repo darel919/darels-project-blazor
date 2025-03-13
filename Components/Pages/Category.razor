@@ -1,0 +1,104 @@
+@page "/category"
+@using dpOnDotnet.Components.Models
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@using System.Text.Json
+
+<div>
+    @if(categoryDetail != null)
+    {
+        <h1>@categoryDetail.Title</h1>
+        <p>@categoryDetail.Description</p>
+    }
+    else {
+        <h1>Oops!</h1>
+    }
+
+    @if (loading)
+    {
+        <p>Loading...</p>
+    }
+    else if (error != null)
+    {
+        <p class="text-danger">@error</p>
+    }
+    else if (videos == null || !videos.Any())
+    {
+        <p>No videos found in this category.</p>
+    }
+    else
+    {
+        <dpOnDotnet.Components.Modules.LibraryView Videos="videos" />
+    }
+</div>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "id")]
+    public string CategoryId { get; set; }  // Changed from Id to CategoryId
+
+    private List<FetchedData> videos;
+    private CategoryDetail categoryDetail;
+    private bool loading = true;
+    private string error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("OnInitializedAsync started");
+        
+        try
+        {
+            Console.WriteLine($"Current URL: {Navigation.Uri}");
+            Console.WriteLine($"Parameter ID: {CategoryId}");
+            
+            if (!string.IsNullOrEmpty(CategoryId))
+            {
+                Console.WriteLine($"Fetching data for category ID: {CategoryId}");
+                var response = await GetCategoryDataAsync(CategoryId);
+                
+                if (response != null)
+                {
+                    Console.WriteLine($"Response received: {JsonSerializer.Serialize(response)}");
+                    categoryDetail = response.Category;
+                    videos = response.Videos;
+                }
+                else
+                {
+                    Console.WriteLine("Response was null");
+                    error = "API returned null response";
+                }
+            }
+            else
+            {
+                Console.WriteLine("No valid ID parameter found");
+                error = "No category ID provided";
+            }
+        }
+        catch (Exception ex)
+        {
+            error = $"Error: {ex.Message}";
+            Console.WriteLine($"Exception: {ex}");
+        }
+        finally
+        {
+            loading = false;
+            Console.WriteLine("OnInitializedAsync completed");
+        }
+    }
+
+    private async Task<CategoryResponse> GetCategoryDataAsync(string categoryId)
+    {
+        try
+        {
+            var apiUrl = $"http://10.10.10.10:328/dp/category?id={categoryId}";
+            Console.WriteLine($"Calling API: {apiUrl}");
+            var response = await Http.GetFromJsonAsync<CategoryResponse>(apiUrl);
+            return response;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"API call failed: {ex.Message}");
+            throw;
+        }
+    }
+}

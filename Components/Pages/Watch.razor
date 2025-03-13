@@ -1,5 +1,6 @@
 ﻿@page "/watch"
 @rendermode InteractiveServer
+@using dpOnDotnet.Components.Models
 
 <PageTitle>@fetchedData?.title - darel's Projects</PageTitle>
 
@@ -8,7 +9,7 @@
     <meta name="type" content="website">
     <meta name="keywords" content="@fetchedData?.title">
     <meta name="description" content="Play @fetchedData?.title at darel's Project">
-    <meta name="author" content="@fetchedData?.submittedBy">
+    <meta name="author" content="@fetchedData?.creator">
     <meta name="keywords" content="darelc,darelisme,darelism,archives">
     
     <meta name="og:title" content="@fetchedData?.title">
@@ -28,21 +29,21 @@
     <meta name="twitter:image" content="@API/dp/thumb?id=@VideoID">
 
     <meta itemprop="interactionCount" content="@fetchedData?.total_views">
-    <meta itemprop="uploadDate" content="@fetchedData?.created_at">
+    <meta itemprop="uploadDate" content="@fetchedData?.created">
 </HeadContent>
 
 <main id="watchPage">
     @if (fetchedData != null) {
         <div id="videoComponent">
-            <iframe class="iplayer" loading="eager" title="Player" allowfullscreen allow="autoplay encrypted-media accelerometer fullscreen" src="https://iplayer.darelisme.my.id/?v=@fetchedData.content_id"></iframe>
+            <iframe class="iplayer" loading="eager" title="Player" allowfullscreen allow="autoplay encrypted-media accelerometer fullscreen" src="https://iplayer.darelisme.my.id/?v=@fetchedData.id"></iframe>
             <h1>@fetchedData.title</h1>
-            <h6>Record date: @fetchedData.created_at</h6>
+            <h6>Record date: @fetchedData.created</h6>
             <h6>@fetchedData.total_views views</h6>
             <FluentButton @onclick="ShareVid" IconStart="@(new Icons.Regular.Size20.Share())" Title="Share this video">
                 Share
             </FluentButton>
-            @if(@fetchedData.vid_uid != null) {
-                <a href="https://youtu.be/@fetchedData.vid_uid" target="_blank" title="Play on YouTube">
+            @if(@fetchedData.yt_vid_id != null) {
+                <a href="https://youtu.be/@fetchedData.yt_vid_id" target="_blank" title="Play on YouTube">
                     <FluentButton IconStart="@(new Icons.Regular.Size20.WindowPlay())">
                         I have problem playing
                     </FluentButton>
@@ -52,10 +53,8 @@
                     I have problem playing
                 </FluentButton>
             }
-           
-            
         </div>
-        <dpOnDotnet.Components.Modules.RecommendationComp CurrentVideoId="@fetchedData.content_id" />
+        <dpOnDotnet.Components.Modules.RecommendationComp CurrentVideoId="@fetchedData.id" />
     } else {
         <FluentProgressRing></FluentProgressRing>
         <h6>Loading content...</h6>
@@ -63,7 +62,7 @@
 </main>
 
 @code {
-     private readonly string API = "https://api.darelisme.my.id";
+    private readonly string API = "https://api.darelisme.my.id";
     private readonly HttpClient httpClient = new HttpClient();
     [SupplyParameterFromQuery(Name = "v")]
     public string VideoID { get; set; }
@@ -71,28 +70,6 @@
 
     @inject IJSRuntime JSRuntime
     @inject NavigationManager Navigation
-
-    public class FetchedData {
-        public DateTime created_at { get; set; }
-        public string vid_uid { get; set; }
-        public string content_id { get; set; }
-        public string submittedBy { get; set; }
-        public int total_views { get; set; }
-        public YTData ytData { get; set; }
-        public string thumbnail { get; set; }
-        public string title { get; set; }
-        public string description { get; set; }
-    }
-
-    public class YTData {
-        public string title { get; set; }
-        @* public List<Thumbnail> videoThumbnails { get; set; } *@
-        public string description { get; set; }
-    }
-
-    @* public class Thumbnail {
-        public string url { get; set; }
-    } *@
 
     private async Task ShareVid() {
         var title = fetchedData?.title;
@@ -117,6 +94,7 @@
         try {
             var apiUrl = $"http://10.10.10.10:328/dp/watch?v={VideoID}";
             fetchedData = await httpClient.GetFromJsonAsync<FetchedData>(apiUrl);
+                @* Console.WriteLine(fetchedData); *@
             shouldScrollToTop = true;
             StateHasChanged(); // Trigger a re-render to call OnAfterRenderAsync
         } catch (Exception ex) {

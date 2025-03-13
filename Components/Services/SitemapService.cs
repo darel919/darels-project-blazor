@@ -4,7 +4,11 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Globalization;
-namespace YourNamespace.Services
+using System;
+using System.Collections.Generic;
+using dpOnDotnet.Components.Models;
+
+namespace dpOnDotnet.Components.Services
 {
     public interface ISitemapService
     {
@@ -18,7 +22,7 @@ namespace YourNamespace.Services
 
         public SitemapService(IConfiguration configuration, HttpClient httpClient)
         {
-            _baseUri = configuration["BaseURL"];
+            _baseUri = configuration["BaseURL"] ?? "https://darelisme.my.id";
             _httpClient = httpClient;
         }
 
@@ -30,13 +34,20 @@ namespace YourNamespace.Services
 
             // Add static URLs
             sitemap.AppendLine(CreateSitemapUrl(_baseUri, "Home", DateTime.UtcNow));
-            // sitemap.AppendLine(CreateSitemapUrl($"{_baseUri}/about", "About", DateTime.UtcNow));
-
+            
             // Fetch and add video URLs
             var videos = await FetchVideosAsync();
             foreach (var video in videos)
             {
-                sitemap.AppendLine(CreateSitemapUrl($"{_baseUri}/watch?v={video.id}", video.title, video.created));
+                DateTime videoDate;
+                if (!string.IsNullOrEmpty(video.created) && DateTime.TryParse(video.created, out videoDate))
+                {
+                    sitemap.AppendLine(CreateSitemapUrl($"{_baseUri}/watch?v={video.id}", video.title ?? "", videoDate));
+                }
+                else
+                {
+                    sitemap.AppendLine(CreateSitemapUrl($"{_baseUri}/watch?v={video.id}", video.title ?? "", DateTime.UtcNow));
+                }
             }
 
             sitemap.AppendLine("</urlset>");
@@ -44,93 +55,113 @@ namespace YourNamespace.Services
         }
 
         private async Task<List<FetchedData>> FetchVideosAsync()
-{
-    var response = await _httpClient.GetAsync("https://api.darelisme.my.id/dp?sortBy=desc");
-    response.EnsureSuccessStatusCode();
-    var responseContent = await response.Content.ReadAsStringAsync();
-    
-    // Use TempFetchedData to handle string dates directly
-    var options = new JsonSerializerOptions
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
-    // Skip trying to deserialize directly to FetchedData and go straight to the fallback approach
-    var tempData = JsonSerializer.Deserialize<List<TempFetchedData>>(responseContent, options);
-    var result = new List<FetchedData>();
-    
-    foreach (var item in tempData)
-    {
-        try
         {
-            // Parse with explicit format for better reliability
-            DateTime parsedDate = DateTime.ParseExact(
-                item.created.Substring(0, 19), // Take only "2025-02-17 00:00:00" part
-                "yyyy-MM-dd HH:mm:ss", 
-                System.Globalization.CultureInfo.InvariantCulture
-            );
+            try
+            {
+                var response = await _httpClient.GetAsync("https://api.darelisme.my.id/dp?sortBy=desc");
+                response.EnsureSuccessStatusCode();
+                var responseContent = await response.Content.ReadAsStringAsync();
                 
-            result.Add(new FetchedData
-            {
-                created = parsedDate,
-                id = item.id,
-                category = item.category,
-                yt_data = item.yt_data,
-                title = item.title
-            });
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error parsing date '{item.created}': {ex.Message}");
-            // Add with minimum date if parsing fails
-            result.Add(new FetchedData
-            {
-                created = DateTime.MinValue,
-                id = item.id,
-                category = item.category,
-                yt_data = item.yt_data,
-                title = item.title
-            });
-        }
-    }
-    
-    return result;
-}
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
 
-// Add this temporary class for fallback parsing
-public class TempFetchedData
-{
-    public string created { get; set; } // As string instead of DateTime
-    public string id { get; set; }
-    public string[] category { get; set; }
-    public yt_data yt_data { get; set; }
-    public string title { get; set; }
-}
+                // First try to deserialize directly to a list of FetchedData
+                try
+                {
+                    var directList = JsonSerializer.Deserialize<List<FetchedData>>(responseContent, options);
+                    if (directList != null && directList.Count > 0)
+                    {
+                        return directList;
+                    }
+                }
+                catch
+                {
+                    // If direct deserialization fails, try with the Response wrapper
+                    try
+                    {
+                        var apiResponse = JsonSerializer.Deserialize<Response>(responseContent, options);
+                        if (apiResponse?.data != null && apiResponse.data.Count > 0)
+                        {
+                            return apiResponse.data;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error deserializing Response: {ex.Message}");
+                        
+                        // Try with temp model and map
+                        try
+                        {
+                            var tempData = JsonSerializer.Deserialize<List<TempFetchedData>>(responseContent, options);
+                            if (tempData != null)
+                            {
+                                var result = new List<FetchedData>();
+                                foreach (var item in tempData)
+                                {
+                                    result.Add(new FetchedData
+                                    {
+                                        created = item.created,
+                                        id = item.id,
+                                        category = item.category,
+                                        title = item.title,
+                                        total_views = item.total_views,
+                                        yt_data = item.yt_data != null ? new YtData
+                                        {
+                                            title = item.yt_data.title,
+                                            description = item.yt_data.description,
+                                            videoThumbnails = item.yt_data.videoThumbnails?.Select(t => 
+                                                new Thumbnail { url = t.url }).ToList()
+                                        } : null
+                                    });
+                                }
+                                return result;
+                            }
+                        }
+                        catch (Exception innerEx)
+                        {
+                            Console.WriteLine($"Error with temp model: {innerEx.Message}");
+                        }
+                    }
+                }
+                
+                return new List<FetchedData>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching videos: {ex.Message}");
+                return new List<FetchedData>();
+            }
+        }
 
         private string CreateSitemapUrl(string loc, string title, DateTime lastMod)
         {
-            var titleElement = title != null ? $"<title>{title}</title>" : string.Empty;
+            var titleElement = !string.IsNullOrEmpty(title) ? $"<title>{title}</title>" : string.Empty;
             return $"<url><loc>{loc}</loc>{titleElement}<lastmod>{lastMod:yyyy-MM-dd}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>";
         }
-    }
-
-    public class FetchedData
-{
-    public DateTime created { get; set; }
-    public string id { get; set; }
-    public string[] category { get; set; }  // Changed from string to string[]
-    public yt_data yt_data { get; set; }
-    public string title { get; set; }
-}
-
-    public class yt_data
-    {
-        public string title { get; set; }
-        public List<Thumbnail> videoThumbnails { get; set; }
-    }
-
-    public class Thumbnail
-    {
-        public string url { get; set; }
+        
+        // Temporary model for direct parsing
+        private class TempFetchedData
+        {
+            public string created { get; set; } = "";
+            public string id { get; set; } = "";
+            public string[]? category { get; set; }
+            public TempYtData? yt_data { get; set; }
+            public string title { get; set; } = "";
+            public int total_views { get; set; }
+        }
+        
+        private class TempYtData
+        {
+            public string? title { get; set; }
+            public List<TempThumbnail>? videoThumbnails { get; set; }
+            public string? description { get; set; }
+        }
+        
+        private class TempThumbnail
+        {
+            public string url { get; set; } = "";
+        }
     }
 }

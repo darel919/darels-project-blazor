@@ -48,16 +48,17 @@
                     foreach (var item in tempData)
                     {
                         try {
-                            // Store both string date and parsed DateTime
+                            // Store parsed DateTime in a local variable, not trying to assign to createdDate
                             DateTime parsedDate = DateTime.ParseExact(
                                 item.created.Substring(0, 19),
                                 "yyyy-MM-dd HH:mm:ss", 
                                 System.Globalization.CultureInfo.InvariantCulture
                             );
                             
+                            // Create a new FetchedData without trying to assign to the read-only createdDate property
                             fetchedVideos.Add(new FetchedData {
                                 created = item.created,
-                                createdDate = parsedDate,
+                                // createdDate is a computed property, don't try to set it directly
                                 id = item.id,
                                 category = item.category,
                                 yt_data = new YtData {
@@ -96,7 +97,6 @@
         }
     }
 
-    // Add this class for temporary deserialization
     public class TempFetchedData {
         public string created { get; set; } = "";
         public string id { get; set; } = "";
